@@ -1,0 +1,77 @@
+{
+  "name": "@halleymedia/unobtrusive-vue",
+  "description": "A thin abstraction layer over the Vue.js renderer for unobtrusive use",
+  "version": "1.0.7",
+  "license": "MIT",
+  "private": false,
+  "author": {
+    "name": "Halleymedia",
+    "email": "dev@halleymedia.com"
+  },
+  "bugs": {
+    "email": "dev@halleymedia.com"
+  },
+  "homepage": "https://github.com/Halleymedia/unobtrusive-vue",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Halleymedia/unobtrusive-vue.git"
+  },
+  "keywords": [
+    "unobtrusive",
+    "rendering",
+    "vue",
+    "frameworkless"
+  ],
+  "main": "lib/index.js",
+  "scripts": {
+    "serve": "webpack-dev-server --mode development --config ./sample/webpack.config.js --inline",
+    "build": "babel src --out-dir lib && webpack --config ./sample/webpack.config.js --mode production --devtool false --display-error-details",
+    "publish": "npm run build && npm publish --access public",
+    "test": "jest"
+  },
+  "dependencies": {
+    "semistandard": "^14.2.3",
+    "vue": "^2.6.12"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.4",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-proposal-decorators": "^7.10.5",
+    "@babel/plugin-proposal-private-methods": "^7.10.4",
+    "@babel/plugin-transform-modules-commonjs": "^7.10.4",
+    "@babel/plugin-transform-named-capturing-groups-regex": "^7.10.4",
+    "@babel/plugin-transform-object-assign": "^7.10.4",
+    "@babel/plugin-transform-spread": "^7.11.0",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/register": "^7.10.5",
+    "@types/webpack-env": "^1.15.2",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.1.0",
+    "copy-webpack-plugin": "^6.0.3",
+    "copyfiles": "^2.3.0",
+    "css-loader": "^4.2.2",
+    "eslint": "^7.7.0",
+    "html-inline-css-webpack-plugin": "^1.8.1",
+    "html-loader": "^1.2.1",
+    "html-webpack-plugin": "^4.3.0",
+    "jest": "^26.4.2",
+    "mini-css-extract-plugin": "^0.10.0",
+    "mini-svg-data-uri": "^1.2.3",
+    "sass": "^1.26.10",
+    "sass-loader": "^10.0.1",
+    "standard": "^14.3.4",
+    "standard-loader": "^7.0.0",
+    "style-loader": "^1.2.1",
+    "url-loader": "^4.1.0",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "semistandard": {
+    "parser": "babel-eslint",
+    "ignore": [
+      "/dist/"
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+import { component } from '../../lib';
+import template from './MainLayout.html';
+
+@component('main-layout', template)
+class MainLayout {
+  /**
+   * @param {import('../models/AppParams').default} params
+   */
+  constructor ({ message }) {
+    console.log('Received message at construction', message);
+  }
+
+  /**
+   * @param {HTMLElement} element
+   */
+  init (element) {
+    console.log('MainLayout has been rendered on element', element);
+  }
+
+  dispose () {
+    console.log('MainLayout has been disposed');
+  }
+
+  /**
+   * @type {number}
+   */
+  initialValue = 0;
+
+  /**
+   * @type {boolean}
+   */
+  autoIncrement = false
+}
+export default MainLayout;

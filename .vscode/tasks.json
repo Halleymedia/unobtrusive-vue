@@ -1,0 +1,52 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+        "label": "build",
+        "type": "npm",
+        "script": "build",
+        "group": {
+            "kind": "build",
+            "isDefault": true
+        },
+        "isBackground": false
+    },
+    {
+        "label": "publish",
+        "type": "npm",
+        "script": "publish",
+        "isBackground": false,
+        "problemMatcher": []
+    },
+    {
+        "label": "serve",
+        "type": "npm",
+        "script": "serve",
+        "promptOnClose": true,
+        "isBackground": true,
+        "problemMatcher": {
+            "owner": "serve",
+            "severity": "error",
+            "fileLocation": "absolute",
+            "background": {
+                "activeOnStart": true,
+                "beginsPattern": "Project is running at",
+                "endsPattern": "Compiled successfully"
+            },
+            "pattern": [
+                {
+                    "regexp": "ERROR in (.*) ([0-9]+):([0-9]+)",
+                    "file": 1,
+                    "line": 2,
+                    "column": 3
+                },
+                {
+                    "regexp": "([A-Za-z0-9-]+):(.*)",
+                    "message": 2,
+                    "code": 1
+                }
+            ]
+        }
+    }
+]
+}

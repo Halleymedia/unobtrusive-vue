@@ -1,0 +1,12 @@
+{
+    "editor.tabSize": 2,
+    "standard.enable": true,
+    "standard.autoFixOnSave": true,
+    "standard.validate": [ "javascript" ],
+    "standard.engine": "semistandard",
+    "files.exclude": {
+        "node_modules/": true,
+        "dist/": true,
+        "lib/": true
+    }
+}

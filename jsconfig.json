@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "strictNullChecks": true,
+        "strictFunctionTypes": true,
+        "noUnusedLocals": true,
+        "strict": true,
+        "baseUrl": ".",
+        "checkJs": true,
+        "target": "es2015",
+        "experimentalDecorators": true,
+        "moduleResolution": "node"
+    }
+}
