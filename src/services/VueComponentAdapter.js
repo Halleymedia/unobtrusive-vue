@@ -76,6 +76,9 @@ export default class VueComponentAdapter {
         proto[method] = function () {
           const result = oldMethod.apply(this, arguments);
           this.__backdoor++;
+          if (result && ('finally' in result) && (typeof result.finally === 'function')) {
+            result.finally(() => { this.__backdoor++; });
+          }
           return result;
         };
         methods[method] = function () {
