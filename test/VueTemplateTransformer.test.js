@@ -98,6 +98,18 @@ it('should transform template event handlers on builtin elements', () => {
   expect(transformedTemplate).toBe(expectedTemplate);
 });
 
+it('should transform template onsubmit to be prevented on builtin elements', () => {
+  // Arrange
+  const template = '<form onsubmit="{{fizz()}}"><custom-comp onsubmit="{{wha}}"></custom-comp></form>';
+  const expectedTemplate = '<form data-component-root @submit.prevent="fizz()"><custom-comp v-bind:vueonsubmit="wha"></custom-comp></form>';
+
+  // Act
+  const transformedTemplate = templateTransformer.transform(template);
+
+  // Assert
+  expect(transformedTemplate).toBe(expectedTemplate);
+});
+
 it('should transform template attributes without moustaches on custom elements', () => {
   // Arrange
   const template = '<div><custom-comp fizz-buzz="true"></custom-comp></div>';

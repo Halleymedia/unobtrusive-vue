@@ -9,13 +9,14 @@ const componentName = { regexp: '(<[a-z-]+)(\\sdata-component-root)?(\\s|>)', fl
 const renderIf = { regexp: `${spaceLookBehind}render-if="${moustacheCapture}"`, flags, replacement: 'v-if="$1"' };
 const renderFor = { regexp: `${spaceLookBehind}render-for="${moustacheCapture}"`, flags, replacement: 'v-for="($item, $index) in $1" :key="$item.id"' };
 const inputValue = { regexp: `${builtinElementLookBehind}(?:value|checked)="${moustacheCapture}"`, flags, replacement: 'v-model="$1"' };
+const onSubmit = { regexp: `${builtinElementLookBehind}onsubmit="${moustacheCapture}"`, flags, replacement: '@submit.prevent="$1"' };
 const eventHandlers = { regexp: `${builtinElementLookBehind}on([a-z]+)="${moustacheCapture}"`, flags, replacement: '@$1="$2"' };
 const builtinAttributes = { regexp: `${builtinElementLookBehind}([a-z-]+)="${moustacheCapture}"`, flags, replacement: 'v-bind:$1="$2"' };
 const componentDataAttributesExpressions = { regexp: `${customElementLookBehind}(data-[a-z-]+)="${moustacheCapture}"`, flags, replacement: 'v-bind:$1="$2"' };
 const customAttributesExpressions = { regexp: `${customElementLookBehind}(?!v-|data-)([a-z-]+)="${moustacheCapture}"`, flags, replacement: `v-bind:${propPrefix}$1="$2"` };
 const customAttributesLiterals = { regexp: `${customElementLookBehind}(?!v-|data-)([a-z-]+)="${optionalMoustacheCapture}"`, flags, replacement: `${propPrefix}$1="$2"` };
 
-const expressions = [componentName, renderIf, renderFor, inputValue, eventHandlers, builtinAttributes, componentDataAttributesExpressions, customAttributesExpressions, customAttributesLiterals];
+const expressions = [componentName, renderIf, renderFor, inputValue, onSubmit, eventHandlers, builtinAttributes, componentDataAttributesExpressions, customAttributesExpressions, customAttributesLiterals];
 
 export default class VueTemplateTransformer {
   /**

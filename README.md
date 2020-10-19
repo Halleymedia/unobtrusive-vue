@@ -136,6 +136,8 @@ You **should NOT**:
  
    Each component should be the only responsible of defining its own HTML elements and their attributes. This will reduce code duplication.
 
+ * Submit events are always prevented.
+
 ## Batteries not included (so you can bring the most appropriate ones for your project)
 Vue.js is used here just as a rendering engine. You'll have to bring your own router and event bus, if needed in your application.
 
