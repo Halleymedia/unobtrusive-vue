@@ -1,4 +1,6 @@
 import VueTemplateTransformer from './VueTemplateTransformer';
+import VueComponentUpdater from './VueComponentUpdater';
+
 export default class VueComponentAdapter {
   /**
    * @type {import('../models/VueComponentDescriptor').default}
@@ -41,7 +43,7 @@ export default class VueComponentAdapter {
           // Let it finish its rendering cycle
           setTimeout(() => componentPrototype.init.call(componentInstance, containerElement), 0);
         }
-        componentInstance.__backdoor++;
+        VueComponentUpdater.update(componentInstance);
       }
     });
     Object.defineProperty(this, 'destroyed', {
@@ -75,9 +77,9 @@ export default class VueComponentAdapter {
         const oldMethod = proto[method];
         proto[method] = function () {
           const result = oldMethod.apply(this, arguments);
-          this.__backdoor++;
+          VueComponentUpdater.update(this);
           if (result && ('finally' in result) && (typeof result.finally === 'function')) {
-            result.finally(() => { this.__backdoor++; });
+            result.finally(() => { VueComponentUpdater.update(this); });
           }
           return result;
         };
@@ -101,8 +103,7 @@ export default class VueComponentAdapter {
         computed[method] = (descriptor && descriptor.get) ? function () {
           // @ts-ignore
           const activationObject = /** @type {any} */ (('$data' in this) ? this.$data : this);
-          // @ts-ignore
-          noop(activationObject.__backdoor);
+          VueComponentUpdater.getValue(activationObject);
           // @ts-ignore
           return descriptor.get.call(activationObject);
         } : undefined;
@@ -135,7 +136,7 @@ export default class VueComponentAdapter {
         const componentInstance = vueComponent.$data;
         const parsedValue = parseValue(value);
         componentInstance[prop.substr(VueTemplateTransformer.propPrefix.length)] = parsedValue;
-        componentInstance.__backdoor++;
+        VueComponentUpdater.update(componentInstance);
       };
     });
     return watch;
@@ -149,7 +150,7 @@ export default class VueComponentAdapter {
     const ConstructorFunction = this.#componentDescriptor.componentConstructor;
     return () => {
       const instance = new ConstructorFunction(this.#componentDescriptor.params);
-      instance.__backdoor = 0;
+      VueComponentUpdater.init(instance);
       return instance;
     };
   }
@@ -181,7 +182,4 @@ export default class VueComponentAdapter {
     }
     return value;
   }
-}
-function noop () {
-
 }

@@ -1,3 +1,9 @@
-export { default as component } from './services/ComponentDecorator';
-export { default as templateTransformer } from './services/VueTemplateTransformer';
-export { default as UnobtrusiveVueApp } from './services/UnobtrusiveVueApp';
+import VueComponentUpdater from './services/VueComponentUpdater';
+import ComponentDecorator from './services/ComponentDecorator';
+import VueTemplateTransformer from './services/VueTemplateTransformer';
+import App from './services/UnobtrusiveVueApp';
+
+export const UnobtrusiveVueApp = App;
+export const templateTransformer = VueTemplateTransformer;
+export const component = ComponentDecorator;
+export const forceUpdate = VueComponentUpdater.update;
