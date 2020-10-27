@@ -145,3 +145,27 @@ it('should transform template data attributes with moustaches on custom elements
   // Assert
   expect(transformedTemplate).toBe(expectedTemplate);
 });
+
+it('should not interfere with class names and inline code', () => {
+  // Arrange
+  const template = '<div class="foo bar" onclick="i++; console.log(j);"></div>';
+  const expectedTemplate = '<div data-component-root class="foo bar" onclick="i++; console.log(j);"></div>';
+
+  // Act
+  const transformedTemplate = templateTransformer.transform(template);
+
+  // Assert
+  expect(transformedTemplate).toBe(expectedTemplate);
+});
+
+it('should not interfere with class names', () => {
+  // Arrange
+  const template = '<div class="foofoo barbar" onclick="{{ foo() }}"></div>';
+  const expectedTemplate = '<div data-component-root class="foofoo barbar" @click="foo()"></div>';
+
+  // Act
+  const transformedTemplate = templateTransformer.transform(template);
+
+  // Assert
+  expect(transformedTemplate).toBe(expectedTemplate);
+});

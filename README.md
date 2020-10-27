@@ -128,7 +128,9 @@ You **should NOT**:
 
    There's [no performance penalty](https://gomakethings.com/how-performant-are-data-attributes-as-selectors/) using `data-*` attributes in selectors so there's really no need to use CSS classes;
 
- * Use setters to provide callbacks to child components. Implement a proper event bus instead and raise events to notify other components in the application.
+ * Use setters to provide callbacks to child components. Implement a proper event bus instead and raise events to notify other components in the application;
+
+ * Use `render-if` on a component root element because, if you do, you won't get a proper `HTMLElement` as an argument to the `init` function. Vue.js replaces it with a comment when an element is not to be rendered.
 
 **Notes**
 
