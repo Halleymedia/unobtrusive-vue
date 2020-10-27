@@ -22,6 +22,13 @@ class MainLayout {
   }
 
   /**
+   * @param {number} value
+   */
+  logUpdate (value) {
+    console.log('Value updated', value);
+  }
+
+  /**
    * @type {number}
    */
   initialValue = 0;

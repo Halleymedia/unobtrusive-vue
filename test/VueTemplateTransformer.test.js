@@ -86,10 +86,10 @@ it('should transform template attributes', () => {
   expect(transformedTemplate).toBe(expectedTemplate);
 });
 
-it('should transform template event handlers on builtin elements', () => {
+it('should transform template event handlers on builtin elements by wrapping the original call', () => {
   // Arrange
-  const template = '<div onclick="{{fizz()}}" onmouseover="{{buzz()}}"><custom-comp onwhatever="{{wha}}"></custom-comp></div>';
-  const expectedTemplate = '<div data-component-root @click="fizz()" @mouseover="buzz()"><custom-comp v-bind:vueonwhatever="wha"></custom-comp></div>';
+  const template = '<div onclick="{{fizz()}}" onmouseover="{{buzz()}}"><custom-comp onwhatever="{{wha()}}"></custom-comp></div>';
+  const expectedTemplate = '<div data-component-root @click="fizz()" @mouseover="buzz()"><custom-comp v-bind:vueonwhatever="function() { var event = { arguments: arguments }; var value = arguments[0]; wha() }.bind(this)"></custom-comp></div>';
 
   // Act
   const transformedTemplate = templateTransformer.transform(template);
@@ -100,8 +100,8 @@ it('should transform template event handlers on builtin elements', () => {
 
 it('should transform template onsubmit to be prevented on builtin elements', () => {
   // Arrange
-  const template = '<form onsubmit="{{fizz()}}"><custom-comp onsubmit="{{wha}}"></custom-comp></form>';
-  const expectedTemplate = '<form data-component-root @submit.prevent="fizz()"><custom-comp v-bind:vueonsubmit="wha"></custom-comp></form>';
+  const template = '<form onsubmit="{{fizz()}}"><custom-comp onsubmit="{{wha()}}"></custom-comp></form>';
+  const expectedTemplate = '<form data-component-root @submit.prevent="fizz()"><custom-comp v-bind:vueonsubmit="function() { var event = { arguments: arguments }; var value = arguments[0]; wha() }.bind(this)"></custom-comp></form>';
 
   // Act
   const transformedTemplate = templateTransformer.transform(template);

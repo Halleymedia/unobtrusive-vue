@@ -19,6 +19,11 @@ class NumericCounter {
   #title = 'Demo'
 
   /**
+   * @type {((value: number) => void)|undefined}
+   */
+  #updateCallback
+
+  /**
    * @type {string}
    */
   get value () {
@@ -29,7 +34,7 @@ class NumericCounter {
    * @param {number} value
    */
   set value (value) {
-    this.#value = isNaN(value) ? 0 : value;
+    this.#updateValue(isNaN(value) ? 0 : value);
   }
 
   /**
@@ -52,11 +57,18 @@ class NumericCounter {
   }
 
   increment () {
-    this.#value++;
+    this.#updateValue(this.#value + 1);
   }
 
   decrement () {
-    this.#value = Math.max(0, this.#value - 1);
+    this.#updateValue(Math.max(0, this.#value - 1));
+  }
+
+  /**
+   * @param {(value: number) => void} callback
+   */
+  set onupdate (callback) {
+    this.#updateCallback = callback;
   }
 
   /**
@@ -69,6 +81,16 @@ class NumericCounter {
   set title (title) {
     this.#title = title;
   }
+
+  /**
+   * @param {number} value
+   */
+  #updateValue = (value) => {
+    this.#value = value;
+    if (this.#updateCallback) {
+      this.#updateCallback(this.#value);
+    }
+  };
 }
 
 export default NumericCounter;
