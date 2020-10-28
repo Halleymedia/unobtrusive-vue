@@ -41,9 +41,13 @@ export default class VueComponentAdapter {
         const componentPrototype = componentInstance.constructor.prototype;
         if ('init' in componentPrototype) {
           // Let it finish its rendering cycle
-          setTimeout(() => componentPrototype.init.call(componentInstance, containerElement), 0);
+          setTimeout(() => {
+            componentPrototype.init.call(componentInstance, containerElement);
+            VueComponentUpdater.update(componentInstance);
+          }, 0);
+        } else {
+          VueComponentUpdater.update(componentInstance);
         }
-        VueComponentUpdater.update(componentInstance);
       }
     });
     Object.defineProperty(this, 'destroyed', {
