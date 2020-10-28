@@ -89,7 +89,7 @@ it('should transform template attributes', () => {
 it('should transform template event handlers on builtin elements by wrapping the original call', () => {
   // Arrange
   const template = '<div onclick="{{fizz()}}" onmouseover="{{buzz()}}"><custom-comp onwhatever="{{wha()}}"></custom-comp></div>';
-  const expectedTemplate = '<div data-component-root @click="fizz()" @mouseover="buzz()"><custom-comp v-bind:vueonwhatever="function() { var event = { arguments: arguments }; var value = arguments[0]; wha() }.bind(this)"></custom-comp></div>';
+  const expectedTemplate = '<div data-component-root @click="event=event||$event;fizz()" @mouseover="event=event||$event;buzz()"><custom-comp v-bind:vueonwhatever="function(event){event=event||{};event.arguments=arguments;var value=arguments[0];wha() }.bind(this)"></custom-comp></div>';
 
   // Act
   const transformedTemplate = templateTransformer.transform(template);
@@ -101,7 +101,7 @@ it('should transform template event handlers on builtin elements by wrapping the
 it('should transform template onsubmit to be prevented on builtin elements', () => {
   // Arrange
   const template = '<form onsubmit="{{fizz()}}"><custom-comp onsubmit="{{wha()}}"></custom-comp></form>';
-  const expectedTemplate = '<form data-component-root @submit.prevent="fizz()"><custom-comp v-bind:vueonsubmit="function() { var event = { arguments: arguments }; var value = arguments[0]; wha() }.bind(this)"></custom-comp></form>';
+  const expectedTemplate = '<form data-component-root @submit.prevent="fizz()"><custom-comp v-bind:vueonsubmit="function(event){event=event||{};event.arguments=arguments;var value=arguments[0];wha() }.bind(this)"></custom-comp></form>';
 
   // Act
   const transformedTemplate = templateTransformer.transform(template);
@@ -161,7 +161,7 @@ it('should not interfere with class names and inline code', () => {
 it('should not interfere with class names', () => {
   // Arrange
   const template = '<div class="foofoo barbar" onclick="{{ foo() }}"></div>';
-  const expectedTemplate = '<div data-component-root class="foofoo barbar" @click="foo()"></div>';
+  const expectedTemplate = '<div data-component-root class="foofoo barbar" @click="event=event||$event;foo()"></div>';
 
   // Act
   const transformedTemplate = templateTransformer.transform(template);

@@ -10,10 +10,10 @@ const renderIf = { regexp: `${spaceLookBehind}render-if="${moustacheCapture}"`, 
 const renderFor = { regexp: `${spaceLookBehind}render-for="${moustacheCapture}"`, flags, replacement: 'v-for="($item, $index) in $1" :key="$item.id"' };
 const inputValue = { regexp: `${builtinElementLookBehind}(?:value|checked)="${moustacheCapture}"`, flags, replacement: 'v-model="$1"' };
 const onSubmit = { regexp: `${builtinElementLookBehind}onsubmit="${moustacheCapture}"`, flags, replacement: '@submit.prevent="$1"' };
-const eventHandlers = { regexp: `${builtinElementLookBehind}on([a-z]+)="${moustacheCapture}"`, flags, replacement: '@$1="$2"' };
+const eventHandlers = { regexp: `${builtinElementLookBehind}on([a-z]+)="${moustacheCapture}"`, flags, replacement: '@$1="event=event||$event;$2"' };
 const builtinAttributes = { regexp: `${builtinElementLookBehind}([a-z-]+)="${moustacheCapture}"`, flags, replacement: 'v-bind:$1="$2"' };
 const componentDataAttributesExpressions = { regexp: `${customElementLookBehind}(data-[a-z-]+)="${moustacheCapture}"`, flags, replacement: 'v-bind:$1="$2"' };
-const customAttributesEventExpressions = { regexp: `${customElementLookBehind}(?!v-|data-)on([a-z-]+)="${moustacheCapture}"`, flags, replacement: `v-bind:${propPrefix}on$1="function() { var event = { arguments: arguments }; var value = arguments[0]; $2 }.bind(this)"` };
+const customAttributesEventExpressions = { regexp: `${customElementLookBehind}(?!v-|data-)on([a-z-]+)="${moustacheCapture}"`, flags, replacement: `v-bind:${propPrefix}on$1="function(event){event=event||{};event.arguments=arguments;var value=arguments[0];$2 }.bind(this)"` };
 const customAttributesExpressions = { regexp: `${customElementLookBehind}(?!v-on|data-on)([a-z-]+)="${moustacheCapture}"`, flags, replacement: `v-bind:${propPrefix}$1="$2"` };
 const customAttributesLiterals = { regexp: `${customElementLookBehind}(?!v-|data-)([a-z-]+)="${optionalMoustacheCapture}"`, flags, replacement: `${propPrefix}$1="$2"` };
 
