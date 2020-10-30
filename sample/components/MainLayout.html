@@ -7,5 +7,7 @@
     <input id="counter-auto-increment" type="checkbox" checked="{{autoIncrement}}"> <label for="counter-auto-increment">Autoincrement once a second</label>
   </div>
   <hr>
-  <numeric-counter title="Here's the counter!" value="{{initialValue}}" auto-increment="{{autoIncrement}}" onupdate="{{ logUpdate(value) }}"></numeric-counter>
+  <div>
+    <numeric-counter title="Here's the counter!" value="{{initialValue}}" auto-increment="{{autoIncrement}}" onupdate="{{ logUpdate(value) }}"/>
+  </div>
 </div>

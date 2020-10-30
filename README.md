@@ -106,15 +106,17 @@ You **must**:
 
  * Add only one root HTML node in a component.
 
+You **may**:
+
+ * Self-close custom components, even if Vue [recommends against it](https://vuejs.org/v2/style-guide/#Self-closing-components-strongly-recommended).
+
 You **should**:
 
  * Use ES6 class `properties` for two-way data binding and `getters` for one-way data binding since properties are publicly writable, getters are not;
 
  * Transform templates at build-time using webpack or gulp. If you don't, then it will be done at runtime and that will break compatibility with IE11 since it's using some regexp functionality which is missing from IE11.
 
-You **should NOT**:
-
- * Use the `class` attribute with moustached syntax because that get complicated fast. Instead, keep things simple: use individual `data-*` attributes named as you like e.g.
+ * NOT use the `class` attribute with moustached syntax because that get complicated fast. Instead, keep things simple: use individual `data-*` attributes named as you like e.g.
    ```
    <my-component data-hidden="{{isHidden}}">Thing</my-component>
    ```
@@ -128,9 +130,7 @@ You **should NOT**:
 
    There's [no performance penalty](https://gomakethings.com/how-performant-are-data-attributes-as-selectors/) using `data-*` attributes in selectors so there's really no need to use CSS classes;
 
- * Use setters to provide callbacks to child components. Implement a proper event bus instead and raise events to notify other components in the application;
-
- * Use `render-if` on a component root element because, if you do, you won't get a proper `HTMLElement` as an argument to the `init` function. Vue.js replaces it with a comment when an element is not to be rendered.
+ * NOT use `render-if` on a component root element because, if you do, you won't get a proper `HTMLElement` as an argument to the `init` function. Vue.js replaces it with a comment when an element is not to be rendered.
 
 **Notes**
 
