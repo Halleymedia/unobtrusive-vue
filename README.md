@@ -1,4 +1,4 @@
-# Unobstrusive Vue
+# Unobtrusive Vue
 This package is a thin abstraction layer over the Vue.js v2.6 rendering engine, so it can be used in a completely unobtrusive way, i.e. it won't surface in the JavaScript or HTML code at all. You're now free to take whatever design decisions you want. This is compatible with modern browsers and IE11 even if... well, [IE11 is pretty much dead now](https://death-to-ie11.com/).
 
 ![counter.gif](counter.gif)

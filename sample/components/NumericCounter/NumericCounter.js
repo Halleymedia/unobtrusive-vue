@@ -1,4 +1,5 @@
-import { component } from '../../lib';
+import './NumericCounter.scss';
+import { component } from '../../../lib'; // You should use: import { component } from '@halleymedia/unobtrusive-vue';
 import template from './NumericCounter.html';
 
 @component('numeric-counter', template)

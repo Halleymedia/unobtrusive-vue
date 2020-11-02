@@ -1,0 +1,28 @@
+<div>
+  <h1>Unobtrusive Vue counter demo</h1>
+  <div>
+    <span>Initial value: </span>
+    <label for="counter-setting"></label>
+    <input id="counter-setting" type="number" value="{{initialValue}}" min="0" max="99">
+    <input id="counter-auto-increment" type="checkbox" checked="{{autoIncrement}}"> <label for="counter-auto-increment">Autoincrement once a second</label>
+  </div>
+  <hr>
+  <div>
+    <numeric-counter title="Here's the counter!" value="{{initialValue}}" auto-increment="{{autoIncrement}}" onupdate="{{ logUpdate(value) }}"/>
+  </div>
+
+  <!-- Named slots showcase -->
+  <reference-links>
+    <p>Here is some useful links</p>
+    <div slot="left-column">
+      <h3>This project</h3>
+      <p><a href="https://www.npmjs.com/package/@halleymedia/unobtrusive-vue" target="_blank">Package on npm</a></p>
+      <p><a href="https://github.com/Halleymedia/unobtrusive-vue">GitHub repository</a></p>
+    </div>
+    <div slot="right-column">
+      <h3>Suggested VSCode extensions</h3>
+      <p><a href="https://marketplace.visualstudio.com/items?itemName=chenxsan.vscode-standardjs" target="_blank">StandardJS</a></p>
+      <p><a href="https://marketplace.visualstudio.com/items?itemName=BrightSoul.html-configurable-autocomplete" target="_blank">HTML Configurable Autocomplete</a></p>
+    </div>
+  </reference-links>
+</div>

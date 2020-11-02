@@ -1,10 +1,11 @@
-import { component } from '../../lib';
+import './MainLayout.scss';
+import { component } from '../../../lib'; // You should use: import { component } from '@halleymedia/unobtrusive-vue';
 import template from './MainLayout.html';
 
 @component('main-layout', template)
 class MainLayout {
   /**
-   * @param {import('../models/AppParams').default} params
+   * @param {import('../../models/AppParams').default} params
    */
   constructor ({ message }) {
     console.log('Received message at construction', message);

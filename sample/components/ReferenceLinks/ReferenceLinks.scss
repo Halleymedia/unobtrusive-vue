@@ -1,0 +1,23 @@
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  background-color: #e5e5e5;
+  padding: 1em;
+  box-sizing: border-box;
+  font-size: 0.8em;
+  p, h3 {
+    padding: 0;
+    margin: 0.2em;
+  }
+}
+
+.reference-columns {
+  display: flex;
+  flex-direction: row;
+  &>* {
+    flex-grow: 1;
+  }
+}
