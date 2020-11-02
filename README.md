@@ -216,8 +216,8 @@ This project follow the JavaScript Semi Standard Style. Click the banner to lear
 
 ## Changelog
 
-### v1.5.0
-Added support for named slots.
+### v1.4.1
+Fixes to documentation and sample.
 
 ### v1.4.0
 Added support for self-closing components.
