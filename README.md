@@ -8,7 +8,9 @@ This project is available as the npm package [https://www.npmjs.com/package/@hal
 
 [![npm package](https://img.shields.io/badge/npm_install-%40halleymedia%2Funobtrusive--vue-blue?logo=npm&style=flat)](https://www.npmjs.com/package/@halleymedia/unobtrusive-vue)
 
-A simple demo application is available in he [sample](./sample) directory of this project.
+A simple demo application is available on GitHub, please review it.
+[https://github.com/Halleymedia/unobtrusive-vue/tree/master/sample](https://github.com/Halleymedia/unobtrusive-vue/tree/master/sample)
+
 
 ## Why unobtrusive
 
@@ -45,7 +47,7 @@ export default class MyComponent {
 ```
 Now there's no trace whatsover of any JavaScript framework being used. It's just simple, natural and readable JavaScript code we can easily unit test. Any developer who knows how to write basic ES6 code can now take part in the project without actually having to read the Vue.js manual beforehand.
 
-This package lets the developer do just that. It takes the burden of _mapping_ ES6 classes to Vue.js convetions.
+This package takes the burden of _mapping_ ES6 classes to Vue.js convetions.
 
  * **Public properties** are `data`. Use these for two-way binding with input elements;
  * **Public getters** are mapped to `computed` to Vue.js;
@@ -73,9 +75,69 @@ And use the attribute `render-for` when you want to repeat an HTML element. The 
   </li>
 </ul>
 ```
-That's all you need to know. This package aims at simplicity and it intentionally does without more advanced features of Vue.js. Developers can now spend more time on the project, instead of wasting time on a framework documentation.
 
-## Template transformation
+The moustached binding also works two-way for input elements:
+
+```
+<input type="text" value="{{query}}">
+```
+
+The `query` property is updated as soon as the user types a character. In case you wanted to execute some code when the user stops typing, just bind a function to the `onchange` or `onblur` event handlers.
+
+```
+<input type="text" value="{{query}}" onchange="{{performSearch()}}">
+```
+
+This package aims at simplicity and it intentionally does without more advanced features of Vue.js. Developers can now spend more time on the project, instead of wasting time on a framework documentation.
+
+## Slotted components
+
+Components can have a default slot and any number of named slots by using the HTML specification. Define some `<slot>` elements in your view component
+
+```
+<div class="modal-dialog">
+  <div class="modal-body">
+    <slot></slot>
+  </div>
+  <footer class="modal-dialog-toolbar">
+    <slot name="toolbar">
+    </slot>
+  </footer>
+</div>
+```
+
+And then, use the component like this. The `<h2>` and `<p>` elements will be added to the default slot, while the `<button>` element will be added to the `toolbar` named slot.
+```
+<modal-dialog>
+  <h2>Attention!</h2>
+  <p>This is the modal body</p>
+  <slot name="toolbar">
+    <button onclick="{{closeModal()}}">Close</button>
+  </slot>
+</modal-dialog>
+```
+
+## Component life-cycle
+Components are notified when they are mounted in the DOM and when they are detached. You may create the `init` and `dispose` methods for this.
+
+```
+/**
+ * @param {HTMLElement} element
+ */
+init (element) {
+  // Component has been mounted in the DOM
+  // Do something with element
+}
+
+dispose () {
+  // Component has been detached, perform some cleanup here
+}
+```
+
+As you can see, the `init` method receives a reference to the component root element. You now have full access to its APIs.
+
+
+## Template transformations
 The moustached syntax is converted to Vue.js conventions. Template transformation is done with by the `@component` decorator at runtime but it's preferred to do it beforehand, at compile time. Here's an example on how to do it with webpack using the `html-loader` and its `preprocessor` option (see [./sample/webpack.config.babel.js](sample/webpack.config.babel.js)).
 
 ```js
@@ -99,12 +161,13 @@ module: {
   ]
 }
 ```
-## Some guidance
+
+## Style guidance
 You **must**:
 
- * Name your custom components using an hyphen `-`, e.g. `my-component` and not `mycomponent`. See the [valid custom element name](https://html.spec.whatwg.org/multipage/custom-elements.html#valid-custom-element-name) in the HTML specification;
+ * Name your custom components using one or more hyphens `-`, e.g. `my-component` and not `mycomponent`. See the [valid custom element name](https://html.spec.whatwg.org/multipage/custom-elements.html#valid-custom-element-name) in the HTML specification;
 
- * Add only one root HTML node in a component.
+ * Add only one root HTML node in each component.
 
 You **may**:
 
@@ -112,11 +175,13 @@ You **may**:
 
 You **should**:
 
- * Use ES6 class `properties` for two-way data binding and `getters` for one-way data binding since properties are publicly writable, getters are not;
+ * Use ES6 class `properties` for two-way data binding and `getters` for one-way data binding since properties are publicly writable, while getters are not;
 
- * Transform templates at build-time using webpack or gulp. If you don't, then it will be done at runtime and that will break compatibility with IE11 since it's using some regexp functionality which is missing from IE11.
+ * Transform templates at build-time using webpack or gulp. If you don't, then it will be done at runtime and that will break compatibility with IE11 since it's using some regexp functionality which is missing from IE11;
 
- * NOT use the `class` attribute with moustached syntax because that get complicated fast. Instead, keep things simple: use individual `data-*` attributes named as you like e.g.
+ * Use lowercase for custom component events. E.g. use `onclick` and not `on-click`.
+
+ * NOT use the `class` attribute with moustached syntax because it would compromise readability. Instead, keep things simple: use individual `data-*` attributes named as you like e.g.
    ```
    <my-component data-hidden="{{isHidden}}">Thing</my-component>
    ```
@@ -126,9 +191,9 @@ You **should**:
    div[data-hidden] { display: none }
    ```
 
-   Please note that `data-*` attributes are added/removed if you use the moustached syntax with a boolean value.
+   There's [no performance penalty](https://gomakethings.com/how-performant-are-data-attributes-as-selectors/) in using `data-*` attributes as selectors so there's really no need to use CSS classes;
 
-   There's [no performance penalty](https://gomakethings.com/how-performant-are-data-attributes-as-selectors/) using `data-*` attributes in selectors so there's really no need to use CSS classes;
+   As expected, `data-*` attributes are removed when you bind them to a boolean `false` value.
 
  * NOT use `render-if` on a component root element because, if you do, you won't get a proper `HTMLElement` as an argument to the `init` function. Vue.js replaces it with a comment when an element is not to be rendered.
 
@@ -138,12 +203,21 @@ You **should**:
  
    Each component should be the only responsible of defining its own HTML elements and their attributes. This will reduce code duplication.
 
- * Submit events are always prevented.
+ * Form `submit` events are always prevented.
 
 ## Batteries not included (so you can bring the most appropriate ones for your project)
 Vue.js is used here just as a rendering engine. You'll have to bring your own router and event bus, if needed in your application.
 
 ## Coding style
-This project follow the JavaScript Semi Standard Style. Click the banner to learn about it.
+This project follow the JavaScript Semi Standard Style. Click the banner to learn more about it.
 
 [![js-semistandard-style](https://raw.githubusercontent.com/standard/semistandard/master/badge.svg)](https://github.com/standard/semistandard)
+
+
+## Changelog
+
+### v1.5.0
+Added support for named slots.
+
+### v1.4.0
+Added support for self-closing components.

@@ -21,7 +21,8 @@ export default class UnobtrusiveVueApp {
   constructor (el, componentParams) {
     this.#componentParams = componentParams || {};
     const components = this.#generateVueComponents();
-    const template = '<main-layout></main-layout>';
+    const template = el.innerHTML || '<main-layout></main-layout>';
+    el.innerHTML = '';
     // @ts-ignore
     this.#vue = /** @type {Vue} */ (new Vue({ el, template, components }));
   }
