@@ -21,10 +21,18 @@ export default class UnobtrusiveVueApp {
   constructor (el, componentParams) {
     this.#componentParams = componentParams || {};
     const components = this.#generateVueComponents();
-    const template = el.innerHTML || '<main-layout></main-layout>';
+    const template = (el.innerHTML || '').replace(/\s/gm, '') === '' ? '<main-layout></main-layout>' : el.innerHTML;
     el.innerHTML = '';
+    const dataObjectAttribute = el.getAttribute('data-object');
+    let data = {};
+    try {
+      if (dataObjectAttribute) {
+        data = JSON.parse(dataObjectAttribute);
+      }
+    } catch {
+    }
     // @ts-ignore
-    this.#vue = /** @type {Vue} */ (new Vue({ el, template, components }));
+    this.#vue = /** @type {Vue} */ (new Vue({ el, template, components, data }));
   }
 
   /**

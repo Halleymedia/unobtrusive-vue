@@ -216,8 +216,14 @@ This project follow the JavaScript Semi Standard Style. Click the banner to lear
 
 ## Changelog
 
+### v1.4.2
+- You can now add a `data-object` attribute to the app root element, in case you need to provide some data to the root component. Its value should be serialized as a JSON object.
+```
+<div data-myapp data-object="{&quot;value&quot;: false}"></div>
+```
+
 ### v1.4.1
-Fixes to documentation and sample.
+- Fixes to documentation and sample.
 
 ### v1.4.0
-Added support for self-closing components.
+- Added support for self-closing components.
