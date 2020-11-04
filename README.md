@@ -136,6 +136,24 @@ dispose () {
 
 As you can see, the `init` method receives a reference to the component root element. You now have full access to its APIs.
 
+## Dynamic components
+
+You can dynamically create a component instance just by passing its name to a `is` attribute. In case you also need to pass a parameter object, then also add a `data-is-*` attribute. In this case, `data-is-params` is used.
+
+```
+<div is="{{ componentName }}" data-is-params="{{ componentParams }}"></div>
+```
+The component will then receive the parameters via a property setter by the same name, e.g. `params` in this case.
+```
+/**
+ * @param {any} value
+ */
+set params (value) {
+  console.log(value);
+}
+```
+
+Only one `data-is-*` attribute can be used at this time. Wrap all parameters in a single object, in case you need to pass more than one.
 
 ## Template transformations
 The moustached syntax is converted to Vue.js conventions. Template transformation is done with by the `@component` decorator at runtime but it's preferred to do it beforehand, at compile time. Here's an example on how to do it with webpack using the `html-loader` and its `preprocessor` option (see [./sample/webpack.config.babel.js](sample/webpack.config.babel.js)).
@@ -215,6 +233,9 @@ This project follow the JavaScript Semi Standard Style. Click the banner to lear
 
 
 ## Changelog
+
+### v1.5.0
+- Add support for dynamic components via the `is` and `data-is-*` attributes.
 
 ### v1.4.2
 - You can now add a `data-object` attribute to the app root element, in case you need to provide some data to the root component. Its value should be serialized as a JSON object.

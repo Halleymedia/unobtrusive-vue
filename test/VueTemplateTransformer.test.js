@@ -205,3 +205,15 @@ it('should replace self-closed components spanning multiple lines', () => {
   // Assert
   expect(transformedTemplate).toBe(expectedTemplate);
 });
+
+it('should bind data-is-* parameters', () => {
+  // Arrange
+  const template = '<div is="{{ whatever }}" data-is-parameters="{{ {a: 1} }}"></div>';
+  const expectedTemplate = '<div data-component-root v-bind:is="whatever" v-bind="{vueparameters:{a: 1}}"></div>';
+
+  // Act
+  const transformedTemplate = templateTransformer.transform(template);
+
+  // Assert
+  expect(transformedTemplate).toBe(expectedTemplate);
+});
