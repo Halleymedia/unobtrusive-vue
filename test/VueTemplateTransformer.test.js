@@ -208,7 +208,7 @@ it('should replace self-closed components spanning multiple lines', () => {
 
 it('should bind data-is-* parameters', () => {
   // Arrange
-  const template = '<div is="{{ whatever }}" data-is-parameters="{{ {a: 1} }}"></div>';
+  const template = '<div is="{{ whatever }}" data-with-is-parameters="{{ {a: 1} }}"></div>';
   const expectedTemplate = '<div data-component-root v-bind:is="whatever" v-bind="{vueparameters:{a: 1}}"></div>';
 
   // Act

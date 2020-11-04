@@ -9,7 +9,7 @@ const componentName = { regexp: '(<[a-z-]+)(\\sdata-component-root)?(\\s|>)', fl
 const componentSelfClose = { regexp: '[<]([a-z]+(?:-[a-z]+)+)\\s([^>]*)/>', flags, replacement: '<$1 $2></$1>' };
 const renderIf = { regexp: `${spaceLookBehind}render-if="${moustacheCapture}"`, flags, replacement: 'v-if="$1"' };
 const renderFor = { regexp: `${spaceLookBehind}render-for="${moustacheCapture}"`, flags, replacement: 'v-for="($item, $index) in $1" :key="$item.id"' };
-const dataIs = { regexp: `${spaceLookBehind}data-is-(.*?)="${moustacheCapture}"`, flags, replacement: `v-bind="{${propPrefix}$1:$2}"` };
+const dataIs = { regexp: `${spaceLookBehind}data-with-is-(.*?)="${moustacheCapture}"`, flags, replacement: `v-bind="{${propPrefix}$1:$2}"` };
 const inputValue = { regexp: `${builtinElementLookBehind}(?:value|checked)="${moustacheCapture}"`, flags, replacement: 'v-model="$1"' };
 const onSubmit = { regexp: `${builtinElementLookBehind}onsubmit="${moustacheCapture}"`, flags, replacement: '@submit.prevent="$1"' };
 const eventHandlers = { regexp: `${builtinElementLookBehind}on([a-z]+)="${moustacheCapture}"`, flags, replacement: '@$1="$2"' };
