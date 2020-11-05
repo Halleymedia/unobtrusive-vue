@@ -1,3 +1,4 @@
+import Vue from 'vue/dist/vue.min';
 import VueTemplateTransformer from './VueTemplateTransformer';
 import VueComponentUpdater from './VueComponentUpdater';
 
@@ -172,7 +173,18 @@ export default class VueComponentAdapter {
    * @returns {any}
    */
   #parseValue = (value) => {
-    if ((value == null) || (typeof value !== 'string')) {
+    if (value == null) {
+      return value;
+    }
+    if (typeof value === 'object') {
+      if (!value.__ob__) {
+        console.log('observable', value);
+        // @ts-ignore
+        value = Vue.observable(value);
+        return value;
+      }
+    }
+    if (typeof value !== 'string') {
       return value;
     }
     if (value.toLowerCase() === 'true') {
@@ -184,6 +196,7 @@ export default class VueComponentAdapter {
     if (!isNaN(numericValue)) {
       return numericValue;
     }
+
     return value;
   }
 }
