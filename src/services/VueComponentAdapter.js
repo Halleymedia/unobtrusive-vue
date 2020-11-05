@@ -178,7 +178,6 @@ export default class VueComponentAdapter {
     }
     if (typeof value === 'object') {
       if (!value.__ob__) {
-        console.log('observable', value);
         // @ts-ignore
         value = Vue.observable(value);
         return value;

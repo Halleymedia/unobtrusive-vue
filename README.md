@@ -234,8 +234,8 @@ This project follow the JavaScript Semi Standard Style. Click the banner to lear
 
 ## Changelog
 
-### v1.5.2
-- Prop values are now Vue observables.
+### v1.5.3
+- Prop object values are now Vue observables.
 
 ### v1.5.1
 - Fix transformer issue with the `data-with-is-*` attribute.
