@@ -76,8 +76,8 @@ it('should transform template input checked', () => {
 
 it('should transform template attributes', () => {
   // Arrange
-  const template = '<div title="{{fizz}}" placeholder="{{buzz}}"><custom-comp whatever="{{wha}}"></custom-comp></div>';
-  const expectedTemplate = '<div data-component-root v-bind:title="fizz" v-bind:placeholder="buzz"><custom-comp v-bind:vuewhatever="wha"></custom-comp></div>';
+  const template = '<div title="{{fizz}}" placeholder="{{buzz}}"><custom-comp whatever="{{wha}}" val-1="{{t}}"></custom-comp></div>';
+  const expectedTemplate = '<div data-component-root v-bind:title="fizz" v-bind:placeholder="buzz"><custom-comp v-bind:vuewhatever="wha" v-bind:vueval-1="t"></custom-comp></div>';
 
   // Act
   const transformedTemplate = templateTransformer.transform(template);
@@ -112,8 +112,8 @@ it('should transform template onsubmit to be prevented on builtin elements', () 
 
 it('should transform template attributes without moustaches on custom elements', () => {
   // Arrange
-  const template = '<div><custom-comp fizz-buzz="true"></custom-comp></div>';
-  const expectedTemplate = '<div data-component-root><custom-comp vuefizz-buzz="true"></custom-comp></div>';
+  const template = '<div><custom-comp fizz-buzz="true" fizz-buzz-1="false"></custom-comp></div>';
+  const expectedTemplate = '<div data-component-root><custom-comp vuefizz-buzz="true" vuefizz-buzz-1="false"></custom-comp></div>';
 
   // Act
   const transformedTemplate = templateTransformer.transform(template);
@@ -124,8 +124,8 @@ it('should transform template attributes without moustaches on custom elements',
 
 it('should ignore template data attributes without moustaches on custom elements', () => {
   // Arrange
-  const template = '<div><custom-comp data-fizz-buzz="true"></custom-comp></div>';
-  const expectedTemplate = '<div data-component-root><custom-comp data-fizz-buzz="true"></custom-comp></div>';
+  const template = '<div><custom-comp data-fizz-buzz="true" data-val-1="hey"></custom-comp></div>';
+  const expectedTemplate = '<div data-component-root><custom-comp data-fizz-buzz="true" data-val-1="hey"></custom-comp></div>';
 
   // Act
   const transformedTemplate = templateTransformer.transform(template);
@@ -136,8 +136,8 @@ it('should ignore template data attributes without moustaches on custom elements
 
 it('should transform template data attributes with moustaches on custom elements', () => {
   // Arrange
-  const template = '<div><custom-comp data-fizz-buzz="{{true}}"></custom-comp></div>';
-  const expectedTemplate = '<div data-component-root><custom-comp v-bind:data-fizz-buzz="true"></custom-comp></div>';
+  const template = '<div><custom-comp data-fizz-buzz="{{true}}" data-val-1="{{false}}"></custom-comp></div>';
+  const expectedTemplate = '<div data-component-root><custom-comp v-bind:data-fizz-buzz="true" v-bind:data-val-1="false"></custom-comp></div>';
 
   // Act
   const transformedTemplate = templateTransformer.transform(template);
@@ -210,6 +210,18 @@ it('should bind data-is-* parameters', () => {
   // Arrange
   const template = '<div is="{{ whatever }}" data-with-is-parameters="{{ {a: 1} }}"></div>';
   const expectedTemplate = '<div data-component-root v-bind:is="whatever" v-bind="{vueparameters:{a: 1}}"></div>';
+
+  // Act
+  const transformedTemplate = templateTransformer.transform(template);
+
+  // Assert
+  expect(transformedTemplate).toBe(expectedTemplate);
+});
+
+it('should support custom element names with multiple dashes', () => {
+  // Arrange
+  const template = '<div><my-custom-element param1="{{ 5 }}" another-param-other="{{ false }}" data-val-1="{{ 1 }}">Test</my-custom-element></div>';
+  const expectedTemplate = '<div data-component-root><my-custom-element v-bind:vueparam1="5" v-bind:vueanother-param-other="false" v-bind:data-val-1="1">Test</my-custom-element></div>';
 
   // Act
   const transformedTemplate = templateTransformer.transform(template);
