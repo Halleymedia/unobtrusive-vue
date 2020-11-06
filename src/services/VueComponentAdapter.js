@@ -34,7 +34,9 @@ export default class VueComponentAdapter {
         const componentInstance = vueComponent.$data;
         const containerElement = vueComponent.$el;
         props.forEach(/** @param {string} prop */ prop => {
-          componentInstance[prop.substr(VueTemplateTransformer.propPrefix.length)] = parseValue(vueComponent[prop]);
+          if (prop in this.$vnode.componentOptions.propsData) {
+            componentInstance[prop.substr(VueTemplateTransformer.propPrefix.length)] = parseValue(vueComponent[prop]);
+          }
         });
         /**
          * @type {any}

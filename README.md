@@ -234,6 +234,11 @@ This project follow the JavaScript Semi Standard Style. Click the banner to lear
 
 ## Changelog
 
+### v1.5.4
+- Fix incorrect transformations for element names with multiple dashes;
+- Component setters are no longer invoked when the custom element is missing the attribute;
+- Add support for numbers in custom attribute names.
+
 ### v1.5.3
 - Prop object values are now Vue observables.
 
