@@ -237,7 +237,9 @@ This project follow the JavaScript Semi Standard Style. Click the banner to lear
 ### v1.6.0
 - Added a couple of hooks: `onBeforeAppCreate` and `onComponentUpdated`. There are two callbacks you can pass to the `UnobtrusiveVueApp` constructor, which ease the implementation of Hot Module Replacement. See the [sample](https://github.com/Halleymedia/unobtrusive-vue/tree/master/sample) on how to use them with Webpack 5;
 
-- You can also provide a custom `errorHandler` and `warnHandler`. If omitted, warning and errors will be logged in the console as expected.
+- You can also provide a custom `errorHandler` and `warnHandler`. If omitted, warning and errors will be logged in the console as expected;
+
+- Set `isDev` to true to enable support for [Vue dev tools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=en).
 
 ```
 const container = document.querySelector('[data-app]');
