@@ -1,5 +1,5 @@
 # Unobtrusive Vue
-This package is a thin abstraction layer over the Vue.js v2.6 rendering engine, so it can be used in a completely unobtrusive way, i.e. it won't surface in the JavaScript or HTML code at all. You're now free to take whatever design decisions you want. This is compatible with modern browsers and IE11 even if... well, [IE11 is pretty much dead now](https://death-to-ie11.com/).
+This package is a thin abstraction layer over the Vue.js v2.6 rendering engine, so it can be used in a completely unobtrusive way, i.e. it won't surface in the JavaScript or HTML code at all. You're now free to take whatever design decisions you want.
 
 ![counter.gif](counter.gif)
 
@@ -233,6 +233,24 @@ This project follow the JavaScript Semi Standard Style. Click the banner to lear
 
 
 ## Changelog
+
+### v1.6.0
+- Added a couple of hooks: `onBeforeAppCreate` and `onComponentUpdated`. There are two callbacks you can pass to the `UnobtrusiveVueApp` constructor, which ease the implementation of Hot Module Replacement. See the [sample](https://github.com/Halleymedia/unobtrusive-vue/tree/master/sample) on how to use them with Webpack 5;
+
+- You can also provide a custom `errorHandler` and `warnHandler`. If omitted, warning and errors will be logged in the console as expected.
+
+```
+const container = document.querySelector('[data-app]');
+const appOptions = {
+  isDev: false,
+  onBeforeAppCreate: (vue, components) => console.log(vue, components),
+  onComponentUpdated: (componentDescriptor) => console.log(componentDescriptor),
+  errorHandler: (err, component, info) => console.error(err, component, info),
+  warnHandler: (err, component, info) => console.warn(err, component, info)
+};
+const componentConstructorParams = {};
+const app = new UnobtrusiveVueApp(container, componentConstructorParams, appOptions);
+```
 
 ### v1.5.4
 - Fix incorrect transformations for element names with multiple dashes;

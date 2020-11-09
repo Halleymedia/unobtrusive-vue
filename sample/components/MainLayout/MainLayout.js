@@ -1,5 +1,5 @@
 import './MainLayout.scss';
-import { component } from '../../../lib'; // You should use: import { component } from '@halleymedia/unobtrusive-vue';
+import { component } from '@halleymedia/unobtrusive-vue';
 import template from './MainLayout.html';
 
 @component('main-layout', template)
@@ -32,7 +32,7 @@ class MainLayout {
   /**
    * @type {number}
    */
-  initialValue = 0;
+  initialValue = 1;
 
   /**
    * @type {boolean}

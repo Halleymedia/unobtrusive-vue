@@ -4,11 +4,18 @@
     {
         "label": "build",
         "type": "npm",
-        "script": "build",
+        "script": "build --prefix sample",
         "group": {
             "kind": "build",
             "isDefault": true
         },
+        "isBackground": false,
+        "dependsOn": [ "build-lib" ]
+    },
+    {
+        "label": "build-lib",
+        "type": "npm",
+        "script": "build",
         "isBackground": false
     },
     {
@@ -21,7 +28,7 @@
     {
         "label": "serve",
         "type": "npm",
-        "script": "serve",
+        "script": "serve --prefix sample",
         "promptOnClose": true,
         "isBackground": true,
         "problemMatcher": {

@@ -1,4 +1,4 @@
-import Vue from 'vue/dist/vue.min';
+import Vue from 'vue/dist/vue';
 import VueTemplateTransformer from './VueTemplateTransformer';
 import VueComponentUpdater from './VueComponentUpdater';
 
@@ -19,10 +19,14 @@ export default class VueComponentAdapter {
     this.components = components;
     const parseValue = this.#parseValue;
     Object.defineProperty(this, 'methods', { configurable: false, enumerable: true, get: this.getMethods });
-    Object.defineProperty(this, 'template', { configurable: false, enumerable: true, get: this.getTemplate });
     Object.defineProperty(this, 'data', { configurable: false, enumerable: true, get: this.getData });
     Object.defineProperty(this, 'computed', { configurable: false, enumerable: true, get: this.getComputed, set: () => {} });
     Object.defineProperty(this, 'watch', { configurable: false, enumerable: true, get: this.getWatch, set: () => {} });
+    Object.defineProperty(this, 'render', {
+      configurable: false,
+      enumerable: true,
+      value: Vue.compile(this.getTemplate()).render
+    });
     Object.defineProperty(this, 'mounted', {
       configurable: false,
       enumerable: true,
@@ -167,6 +171,10 @@ export default class VueComponentAdapter {
       const alteredName = `${VueTemplateTransformer.propPrefix}${name}`;
       return alteredName;
     });
+  }
+
+  getComponentDescriptor () {
+    return this.#componentDescriptor;
   }
 
   /**

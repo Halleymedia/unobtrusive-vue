@@ -2,6 +2,11 @@ import { componentRegistry } from './VueComponentRegistry';
 import VueTemplateTransformer from './VueTemplateTransformer';
 
 /**
+ * @type {function|undefined}
+ */
+let onComponentUpdatedCallback;
+
+/**
  * @param {string} elementName
  * @param {string} template
  * @return {(target: any) => any}
@@ -53,5 +58,16 @@ export default (elementName, template) => {
     componentRegistry.registerComponentProperties(target, propertyNames);
     componentRegistry.registerComponentComputed(target, computedNames);
     componentRegistry.registerComponentTemplate(target, template);
+    if (onComponentUpdatedCallback && typeof onComponentUpdatedCallback === 'function') {
+      const descriptor = componentRegistry.getOrCreateDescriptor(target);
+      onComponentUpdatedCallback(descriptor);
+    }
   };
 };
+
+/**
+ * @param {function|undefined} callback
+ */
+export function setComponentUpdatedCallback (callback) {
+  onComponentUpdatedCallback = callback;
+}

@@ -1,5 +1,5 @@
 import './NumericCounter.scss';
-import { component } from '../../../lib'; // You should use: import { component } from '@halleymedia/unobtrusive-vue';
+import { component } from '@halleymedia/unobtrusive-vue';
 import template from './NumericCounter.html';
 
 @component('numeric-counter', template)
@@ -7,22 +7,22 @@ class NumericCounter {
   /**
    * @type {number}
    */
-  #value = 0
+  #value = 0;
 
   /**
    * @type {NodeJS.Timeout|undefined}
    */
-  #intervalToken
+  #intervalToken;
 
   /**
    * @type {string}
    */
-  #title = 'Demo'
+  #title = 'Demo';
 
   /**
    * @type {((value: number) => void)|undefined}
    */
-  #updateCallback
+  #updateCallback;
 
   /**
    * @type {string}
@@ -43,10 +43,7 @@ class NumericCounter {
    */
   set autoIncrement (value) {
     if (!value) {
-      if (this.#intervalToken) {
-        clearInterval(this.#intervalToken);
-        this.#intervalToken = undefined;
-      }
+      this.#clearInterval();
       return;
     }
     if (value && this.#intervalToken) {
@@ -63,6 +60,10 @@ class NumericCounter {
 
   decrement () {
     this.#updateValue(Math.max(0, this.#value - 1));
+  }
+
+  dispose () {
+    this.#clearInterval();
   }
 
   /**
@@ -92,6 +93,15 @@ class NumericCounter {
       this.#updateCallback(this.#value);
     }
   };
+
+  #clearInterval = () => {
+    if (!this.#intervalToken) {
+      return;
+    }
+
+    clearInterval(this.#intervalToken);
+    this.#intervalToken = undefined;
+  }
 }
 
 export default NumericCounter;
