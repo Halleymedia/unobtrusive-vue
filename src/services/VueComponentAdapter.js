@@ -86,10 +86,17 @@ export default class VueComponentAdapter {
         value: this.#renderError
       });
     }
+
+    const compiledTemplate = Vue.compile(this.getTemplate());
+    Object.defineProperty(this, 'staticRenderFns', {
+      configurable: false,
+      enumerable: true,
+      value: compiledTemplate.staticRenderFns
+    });
     Object.defineProperty(this, 'render', {
       configurable: false,
       enumerable: true,
-      value: Vue.compile(this.getTemplate()).render
+      value: compiledTemplate.render
     });
   }
 

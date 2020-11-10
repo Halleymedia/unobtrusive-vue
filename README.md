@@ -283,7 +283,10 @@ This project follow the JavaScript Semi Standard Style. Click the banner to lear
 
 ## Changelog
 
-### v.1.6.2
+### v1.6.3
+ - Fixed a bug which would prevent component constructor parameters to be passed to hot-reloaded instances.
+
+### v1.6.2
  - The `event` identifier is now available in all event handlers. Custom components also get the `args` and `value` identifiers which are reference to - respectively - all arguments and the first argument (if any).
 
 ### v1.6.1

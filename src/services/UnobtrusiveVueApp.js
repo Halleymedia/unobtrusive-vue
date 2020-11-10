@@ -76,6 +76,9 @@ export default class UnobtrusiveVueApp {
       Vue.config.devtools = true;
       // @ts-ignore
       Vue.config.performance = true;
+    } else {
+      // @ts-ignore
+      Vue.config.silent = true;
     }
 
     // @ts-ignore
@@ -145,7 +148,6 @@ export default class UnobtrusiveVueApp {
      */
     const components = {};
     componentRegistry.descriptors.forEach(descriptor => {
-      descriptor.params = Object.create(this.#componentParams);
       const component = this.#createVueComponent(descriptor, components);
       components[descriptor.elementName] = component;
     });
@@ -158,6 +160,7 @@ export default class UnobtrusiveVueApp {
    * @param {Object.<string, import('./VueComponentAdapter').default>} components
    */
   #createVueComponent = (descriptor, components) => {
+    descriptor.params = Object.create(this.#componentParams);
     return new VueComponentAdapter(descriptor, components, this.#isDev, this.#onComponentCreating);
   }
 
