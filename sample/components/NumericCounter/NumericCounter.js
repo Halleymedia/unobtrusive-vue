@@ -15,9 +15,9 @@ class NumericCounter {
   #intervalToken;
 
   /**
-   * @type {string}
+   * @type {string|undefined}
    */
-  #title = 'Demo';
+  #title;
 
   /**
    * @type {((value: number) => void)|undefined}
@@ -74,7 +74,7 @@ class NumericCounter {
   }
 
   /**
-   * @type {string}
+   * @type {string|undefined}
    */
   get title () {
     return this.#title;

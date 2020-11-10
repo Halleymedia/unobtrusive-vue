@@ -11,6 +11,19 @@ This project is available as the npm package [https://www.npmjs.com/package/@hal
 A simple demo application is available on GitHub, please review it.
 [https://github.com/Halleymedia/unobtrusive-vue/tree/master/sample](https://github.com/Halleymedia/unobtrusive-vue/tree/master/sample)
 
+```js
+const container = document.querySelector('[data-app]');
+const appOptions = {
+  isDev: true,
+  onAppCreating: (vue, components) => console.log(vue, components),
+  onComponentUpdated: (componentDescriptor) => console.log(componentDescriptor),
+  onComponentCreating: (componentDescriptor, componentPropertyBag) => { componentPropertyBag.title = () => 'Hello unobtrusive Vue!'; },
+  errorHandler: (err, component, info) => console.error(err, component, info),
+  warnHandler: (err, component, info) => console.warn(err, component, info)
+};
+const componentConstructorParams = { foo: 'bar' }; // Each component will get this object in its constructor
+const app = new UnobtrusiveVueApp(container, componentConstructorParams, appOptions);
+```
 
 ## Why unobtrusive
 
@@ -29,8 +42,8 @@ var app5 = new Vue({
   }
 })
 ```
-This way of doing things looks artificial and tightly coupled to Vue.js itself and the DOM. We believe the application logic should be freed from any framework convention. What if we could, instead, express `data` as simple properties and `methods` as, well, methods of an ES6 class?
-Image we could rewrite the previous code in a more idiomatic way like this.
+This way of doing things looks artificial and tightly coupled to Vue.js itself and the DOM. We believe the application logic should be freed from any framework convention. What if we could, instead, express `data` as simple properties and `methods` as... well, methods of an ES6 class?
+Imagine we could rewrite the previous code in a more idiomatic way.
 
 ```js
 import { component } from '@halleymedia/unobtrusive-vue'
@@ -38,7 +51,7 @@ import template from './my-component.html' //use webpack for this, see sample
 
 @component('my-component', template)
 export default class MyComponent {
-  message = 'Hello application!' // A simple property
+  message = 'Hello Unobtrusive!' // A simple property
 
   reverseMessage () { // A method
     this.message = this.message.split('').reverse().join('')
@@ -58,7 +71,7 @@ This package takes the burden of _mapping_ ES6 classes to Vue.js convetions.
 ## The View
 Just use the moustache syntax everywhere:
 ```
-<button type="button" title="{{message}}" onclick="{{reverseMessage()}}">{{message}}</button>
+<button type="button" title="{{ message }}" onclick="{{ reverseMessage() }}">{{ message }}</button>
 ```
 Again, there's no trace of a framework being used.
 
@@ -70,8 +83,8 @@ Use the special attribute `render-if` when you want to dynamically render an HTM
 And use the attribute `render-for` when you want to repeat an HTML element. The `$index` and `$item` variables will be automatically made available in this context.
 ```
 <ul>
-  <li render-for="{{results}}">
-    <span>{{$index}}</span>. <span>{{$item}}</span></li>
+  <li render-for="{{ results }}">
+    <span>{{ $index }}</span>. <span>{{ $item }}</span></li>
   </li>
 </ul>
 ```
@@ -79,13 +92,13 @@ And use the attribute `render-for` when you want to repeat an HTML element. The 
 The moustached binding also works two-way for input elements:
 
 ```
-<input type="text" value="{{query}}">
+<input type="text" value="{{ query }}">
 ```
 
 The `query` property is updated as soon as the user types a character. In case you wanted to execute some code when the user stops typing, just bind a function to the `onchange` or `onblur` event handlers.
 
 ```
-<input type="text" value="{{query}}" onchange="{{performSearch()}}">
+<input type="text" value="{{ query }}" onchange="{{ performSearch() }}">
 ```
 
 This package aims at simplicity and it intentionally does without more advanced features of Vue.js. Developers can now spend more time on the project, instead of wasting time on a framework documentation.
@@ -112,7 +125,7 @@ And then, use the component like this. The `<h2>` and `<p>` elements will be add
   <h2>Attention!</h2>
   <p>This is the modal body</p>
   <slot name="toolbar">
-    <button onclick="{{closeModal()}}">Close</button>
+    <button onclick="{{ closeModal() }}">Close</button>
   </slot>
 </modal-dialog>
 ```
@@ -223,6 +236,20 @@ You **should**:
 
  * Form `submit` events are always prevented.
 
+## App lifecycke hooks
+(Optionally) Pass these to the `UnobtrusiveVueApp` constructor.
+  - `onAppCreating` fires when components have been created but just before Vue is instanced. It gives an opportunity to register components with the [vue-hot-reload-api](https://www.npmjs.com/package/vue-hot-reload-api) for Hot Module Replacement;
+  - `onComponentUpdated` fires when after the Hot Module Replacement reloads changed component files. It gives an opportunity to make the [vue-hot-reload-api](https://www.npmjs.com/package/vue-hot-reload-api) `reload` or `rerender` a component;
+  - `onComponentCreating` allows you to add computed functions to a component. Useful to expose values to each component instead of using global variables.
+
+## Hot Module Replacement
+This package support the live reload of components, such as the Hot Module Replacement feature of Webpack. Components can be rerendered (in case just the template changes, which will preserve state) or completely reloaded. See the [sample](https://github.com/Halleymedia/unobtrusive-vue/tree/master/sample) on how to use with Webpack 5.
+
+## Dev tools
+You're free to use the [Vue.js devtools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=en), if you want. Just set `isDev: true` when you're creating the `UnobtrusiveVueApp` instance.
+
+You can also provide a custom `errorHandler` and `warnHandler`. If omitted, warning and errors will be logged in the console as expected.
+
 ## Batteries not included (so you can bring the most appropriate ones for your project)
 Vue.js is used here just as a rendering engine. You'll have to bring your own router and event bus, if needed in your application.
 
@@ -234,48 +261,33 @@ This project follow the JavaScript Semi Standard Style. Click the banner to lear
 
 ## Changelog
 
-### v1.6.0
-- Added a couple of hooks: `onBeforeAppCreate` and `onComponentUpdated`. There are two callbacks you can pass to the `UnobtrusiveVueApp` constructor, which ease the implementation of Hot Module Replacement. See the [sample](https://github.com/Halleymedia/unobtrusive-vue/tree/master/sample) on how to use them with Webpack 5;
-
-- You can also provide a custom `errorHandler` and `warnHandler`. If omitted, warning and errors will be logged in the console as expected;
-
-- Set `isDev` to true to enable support for [Vue dev tools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=en).
-
-```
-const container = document.querySelector('[data-app]');
-const appOptions = {
-  isDev: false,
-  onBeforeAppCreate: (vue, components) => console.log(vue, components),
-  onComponentUpdated: (componentDescriptor) => console.log(componentDescriptor),
-  errorHandler: (err, component, info) => console.error(err, component, info),
-  warnHandler: (err, component, info) => console.warn(err, component, info)
-};
-const componentConstructorParams = {};
-const app = new UnobtrusiveVueApp(container, componentConstructorParams, appOptions);
-```
+### v1.6.1
+ - Added hooks `onAppCreating`, `onComponentCreating` and `onComponentUpdated`. Sample updated with Hot Module Replacement with Webpack.
+ - Also added options for `errorHandler` and `warnHandler`. If omitted, warning and errors will be logged in the console as expected;
+ - Set `isDev` to true to enable support for [Vue dev tools](https://chrome.google.com/webstore/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd?hl=en).
 
 ### v1.5.4
-- Fix incorrect transformations for element names with multiple dashes;
-- Component setters are no longer invoked when the custom element is missing the attribute;
-- Add support for numbers in custom attribute names.
+ - Fix incorrect transformations for element names with multiple dashes;
+ - Component setters are no longer invoked when the custom element is missing the attribute;
+ - Add support for numbers in custom attribute names.
 
 ### v1.5.3
-- Prop object values are now Vue observables.
+ - Prop object values are now Vue observables.
 
 ### v1.5.1
-- Fix transformer issue with the `data-with-is-*` attribute.
+ - Fix transformer issue with the `data-with-is-*` attribute.
 
 ### v1.5.0
-- Add support for dynamic components via the `is` and `data-with-is-*` attributes.
+ - Add support for dynamic components via the `is` and `data-with-is-*` attributes.
 
 ### v1.4.2
-- You can now add a `data-object` attribute to the app root element, in case you need to provide some data to the root component. Its value should be serialized as a JSON object.
-```
-<div data-myapp data-object="{&quot;value&quot;: false}"></div>
-```
+ - You can now add a `data-object` attribute to the app root element, in case you need to provide some data to the root component. Its value should be serialized as a JSON object.
+ ```
+ <div data-myapp data-object="{&quot;value&quot;: false}"></div>
+ ```
 
 ### v1.4.1
-- Fixes to documentation and sample.
+ - Fixes to documentation and sample.
 
 ### v1.4.0
-- Added support for self-closing components.
+ - Added support for self-closing components.

@@ -9,13 +9,13 @@ module.exports = function (source) {
 /**
  * @param {__WebpackModuleApi.Hot|undefined} hot
  * @param {() => import('@halleymedia/unobtrusive-vue').UnobtrusiveVueApp} appAccessor
- * @returns {{ onBeforeAppCreate: function|undefined, onComponentUpdated: function|undefined }}
+ * @returns {{ onAppCreating: function|undefined, onComponentUpdated: function|undefined }}
  */
 module.exports.setupHotModuleReload = (hot, appAccessor) => {
   /**
    * @type {function|undefined}
    */
-  let onBeforeAppCreate;
+  let onAppCreating;
 
   /**
  * @type {function|undefined}
@@ -24,7 +24,7 @@ module.exports.setupHotModuleReload = (hot, appAccessor) => {
 
   if (hot) {
     const hotReloadApi = require('vue-hot-reload-api');
-    onBeforeAppCreate = /**
+    onAppCreating = /**
     * @param {any} vue
     * @param {Object.<string, object>} components
     */
@@ -54,5 +54,5 @@ module.exports.setupHotModuleReload = (hot, appAccessor) => {
         }
       };
   }
-  return { onBeforeAppCreate, onComponentUpdated };
+  return { onAppCreating, onComponentUpdated };
 };

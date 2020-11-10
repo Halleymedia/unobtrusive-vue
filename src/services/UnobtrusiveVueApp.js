@@ -27,17 +27,27 @@ export default class UnobtrusiveVueApp {
   /**
    * @type {boolean}
    */
-  #isDev;
+  #isDev = false;
+
+  /**
+   * @type {function|undefined}
+   */
+  #onComponentCreating;
 
   /**
    * Installs Vue on the container element
    * @param {HTMLElement} el
    * @param {any|undefined} [componentParams]
-   * @param {{ isDev: boolean, onBeforeAppCreate: function|undefined, onComponentUpdated: function|undefined, errHandler: function|undefined }|undefined} [options]
+   * @param {{ isDev: boolean, onAppCreating: function|undefined, onComponentUpdated: function|undefined, onComponentCreating: function|undefined, errHandler: function|undefined }|undefined} [options]
    */
   constructor (el, componentParams, options) {
     this.#vue = Vue;
-    this.#isDev = options !== undefined && options.isDev === true;
+    if (options) {
+      this.#isDev = options.isDev === true;
+      if (options.onComponentCreating && (typeof options.onComponentCreating === 'function')) {
+        this.#onComponentCreating = options.onComponentCreating;
+      }
+    }
     this.#componentParams = componentParams || {};
     this.#components = this.#createVueComponents();
     const components = this.#components;
@@ -56,8 +66,8 @@ export default class UnobtrusiveVueApp {
       if (options.onComponentUpdated) {
         setComponentUpdatedCallback(options.onComponentUpdated);
       }
-      if (options.onBeforeAppCreate && (typeof options.onBeforeAppCreate === 'function')) {
-        options.onBeforeAppCreate(Vue, components);
+      if (options.onAppCreating && (typeof options.onAppCreating === 'function')) {
+        options.onAppCreating(Vue, components);
       }
     }
 
@@ -148,15 +158,7 @@ export default class UnobtrusiveVueApp {
    * @param {Object.<string, import('./VueComponentAdapter').default>} components
    */
   #createVueComponent = (descriptor, components) => {
-    const component = new VueComponentAdapter(descriptor, components);
-    if (this.#isDev) {
-      Object.defineProperty(component, 'renderError', {
-        configurable: false,
-        enumerable: true,
-        value: this.#renderError
-      });
-    }
-    return component;
+    return new VueComponentAdapter(descriptor, components, this.#isDev, this.#onComponentCreating);
   }
 
   /**
@@ -181,14 +183,6 @@ export default class UnobtrusiveVueApp {
       return;
     }
     innerHandler(err, vm, info);
-  };
-
-  /**
-   * @param {function} h
-   * @param {any} err
-   */
-  #renderError = (h, err) => {
-    return h('pre', { style: { color: 'red' } }, ['❌ Rendering error (see console)']); // err.stack
   };
 
   /**

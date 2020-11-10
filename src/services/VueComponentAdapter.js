@@ -9,11 +9,19 @@ export default class VueComponentAdapter {
   #componentDescriptor;
 
   /**
+   * @type {function|undefined}
+   */
+  #onComponentCreating;
+
+  /**
    * @param {import('../models/VueComponentDescriptor').default} componentDescriptor
    * @param {Object.<string, VueComponentAdapter>} components
+   * @param {boolean|undefined} [addRenderError]
+   * @param {function|undefined} [onComponentCreating]
    */
-  constructor (componentDescriptor, components) {
+  constructor (componentDescriptor, components, addRenderError, onComponentCreating) {
     this.#componentDescriptor = componentDescriptor;
+    this.#onComponentCreating = onComponentCreating;
     const props = this.getProps();
     this.props = props;
     this.components = components;
@@ -21,12 +29,8 @@ export default class VueComponentAdapter {
     Object.defineProperty(this, 'methods', { configurable: false, enumerable: true, get: this.getMethods });
     Object.defineProperty(this, 'data', { configurable: false, enumerable: true, get: this.getData });
     Object.defineProperty(this, 'computed', { configurable: false, enumerable: true, get: this.getComputed, set: () => {} });
+    Object.defineProperty(this, 'template', { configurable: false, enumerable: true, get: this.getTemplate, set: this.setTemplate });
     Object.defineProperty(this, 'watch', { configurable: false, enumerable: true, get: this.getWatch, set: () => {} });
-    Object.defineProperty(this, 'render', {
-      configurable: false,
-      enumerable: true,
-      value: Vue.compile(this.getTemplate()).render
-    });
     Object.defineProperty(this, 'mounted', {
       configurable: false,
       enumerable: true,
@@ -75,6 +79,18 @@ export default class VueComponentAdapter {
         }
       }
     });
+    if (addRenderError) {
+      Object.defineProperty(this, 'renderError', {
+        configurable: false,
+        enumerable: true,
+        value: this.#renderError
+      });
+    }
+    Object.defineProperty(this, 'render', {
+      configurable: false,
+      enumerable: true,
+      value: Vue.compile(this.getTemplate()).render
+    });
   }
 
   getMethods () {
@@ -119,6 +135,9 @@ export default class VueComponentAdapter {
           return descriptor.get.call(activationObject);
         } : undefined;
       });
+    if (this.#onComponentCreating && typeof this.#onComponentCreating === 'function') {
+      this.#onComponentCreating(this.#componentDescriptor, computed);
+    }
     return computed;
   }
 
@@ -155,6 +174,13 @@ export default class VueComponentAdapter {
 
   getTemplate () {
     return this.#componentDescriptor.template;
+  }
+
+  /**
+   * @param {string} value
+   */
+  setTemplate (value) {
+    this.#componentDescriptor.template = value;
   }
 
   getData () {
@@ -208,4 +234,12 @@ export default class VueComponentAdapter {
 
     return value;
   }
+
+  /**
+   * @param {function} h
+   * @param {any} err
+   */
+  #renderError = (h, err) => {
+    return h('pre', { style: { color: 'red' } }, ['❌ Rendering error (see console)']); // err.stack
+  };
 }

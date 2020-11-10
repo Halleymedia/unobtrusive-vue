@@ -1,26 +1,26 @@
 <div>
-  <h1>Unobtrusive Vue counter demo</h1>
+  <h1>{{ localization.main.title }}</h1>
   <div>
-    <span>Initial value: </span>
+    <span>{{ localization.main.initialValue }}: </span>
     <label for="counter-setting"></label>
-    <input id="counter-setting" type="number" value="{{initialValue}}" min="0" max="99">
-    <input id="counter-auto-increment" type="checkbox" checked="{{autoIncrement}}"> <label for="counter-auto-increment">Autoincrement once a second</label>
+    <input id="counter-setting" type="number" value="{{ initialValue }}" min="0" max="99">
+    <input id="counter-auto-increment" type="checkbox" checked="{{ autoIncrement }}"> <label for="counter-auto-increment">{{ localization.main.autoIncrement }}</label>
   </div>
   <hr>
   <div>
-    <numeric-counter title="Here's the counter!" value="{{initialValue}}" auto-increment="{{autoIncrement}}" onupdate="{{ logUpdate(value) }}"/>
+    <numeric-counter title="{{ localization.counter.title }}" value="{{ initialValue }}" auto-increment="{{ autoIncrement }}" onupdate="{{ logUpdate(value) }}"/>
   </div>
 
   <!-- Named slots showcase -->
   <reference-links>
-    <p>Some useful links</p>
+    <p>{{ localization.footer.someLinks }}</p>
     <div slot="left-column">
-      <h3>This project</h3>
+      <h3>{{ localization.footer.thisProject }}</h3>
       <p><a href="https://www.npmjs.com/package/@halleymedia/unobtrusive-vue" target="_blank">Package on npm</a></p>
       <p><a href="https://github.com/Halleymedia/unobtrusive-vue">GitHub repository</a></p>
     </div>
     <div slot="right-column">
-      <h3>Suggested VSCode extensions</h3>
+      <h3>{{ localization.footer.suggestedExtensions }}</h3>
       <p><a href="https://marketplace.visualstudio.com/items?itemName=chenxsan.vscode-standardjs" target="_blank">StandardJS</a></p>
       <p><a href="https://marketplace.visualstudio.com/items?itemName=BrightSoul.html-configurable-autocomplete" target="_blank">HTML Configurable Autocomplete</a></p>
     </div>
