@@ -18,6 +18,21 @@ class MainLayout {
     console.log('MainLayout has been rendered on element', element);
   }
 
+  /**
+   * @param {Event} event
+   */
+  move (event) {
+    console.log(event);
+  }
+
+  /**
+   *
+   * @param {Event} event
+   */
+  clicca (event) {
+    console.log('0cl', event);
+  }
+
   dispose () {
     console.log('MainLayout has been disposed');
   }

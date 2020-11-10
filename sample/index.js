@@ -35,7 +35,7 @@ if (container) {
   let app = null;
 
   /**
-   * @type {any|undefined}
+   * @type {any}
    */
   const appOptions = { isDev: false, onAppCreating: undefined, onComponentUpdated: undefined, onComponentCreating: addGlobals };
   // #!if MODE === 'development'

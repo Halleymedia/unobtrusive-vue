@@ -89,7 +89,7 @@ it('should transform template attributes', () => {
 it('should transform template event handlers on builtin elements by wrapping the original call', () => {
   // Arrange
   const template = '<div onclick="{{fizz()}}" onmouseover="{{buzz()}}"><custom-comp onwhatever="{{wha()}}"></custom-comp></div>';
-  const expectedTemplate = '<div data-component-root @click="fizz()" @mouseover="buzz()"><custom-comp v-bind:vueonwhatever="function(event){event=event||{};event.arguments=arguments;var value=arguments[0];wha() }.bind(this)"></custom-comp></div>';
+  const expectedTemplate = '<div data-component-root @click="fizz()" @mouseover="buzz()"><custom-comp v-bind:vueonwhatever="function(){var args=arguments;var value=args.length?args[0]:undefined;wha() }.bind(this)"></custom-comp></div>';
 
   // Act
   const transformedTemplate = templateTransformer.transform(template);
@@ -101,7 +101,7 @@ it('should transform template event handlers on builtin elements by wrapping the
 it('should transform template onsubmit to be prevented on builtin elements', () => {
   // Arrange
   const template = '<form onsubmit="{{fizz()}}"><custom-comp onsubmit="{{wha()}}"></custom-comp></form>';
-  const expectedTemplate = '<form data-component-root @submit.prevent="fizz()"><custom-comp v-bind:vueonsubmit="function(event){event=event||{};event.arguments=arguments;var value=arguments[0];wha() }.bind(this)"></custom-comp></form>';
+  const expectedTemplate = '<form data-component-root @submit.prevent="fizz()"><custom-comp v-bind:vueonsubmit="function(){var args=arguments;var value=args.length?args[0]:undefined;wha() }.bind(this)"></custom-comp></form>';
 
   // Act
   const transformedTemplate = templateTransformer.transform(template);
@@ -218,10 +218,46 @@ it('should bind data-is-* parameters', () => {
   expect(transformedTemplate).toBe(expectedTemplate);
 });
 
+it('should bind data attributes in tag names containing numbers', () => {
+  // Arrange
+  const template = '<div><my-component-4 data-is-compact="{{ isCompact }}"><h4 id="modal-title" render-if="{{ title }}" data-is-compact="{{ isCompact }}"></h4></my-component-4></div>';
+  const expectedTemplate = '<div data-component-root><my-component-4 v-bind:data-is-compact="isCompact"><h4 id="modal-title" v-if="title" v-bind:data-is-compact="isCompact"></h4></my-component-4></div>';
+
+  // Act
+  const transformedTemplate = templateTransformer.transform(template);
+
+  // Assert
+  expect(transformedTemplate).toBe(expectedTemplate);
+});
+
 it('should support custom element names with multiple dashes', () => {
   // Arrange
   const template = '<div><my-custom-element param1="{{ 5 }}" another-param-other="{{ false }}" data-val-1="{{ 1 }}">Test</my-custom-element></div>';
   const expectedTemplate = '<div data-component-root><my-custom-element v-bind:vueparam1="5" v-bind:vueanother-param-other="false" v-bind:data-val-1="1">Test</my-custom-element></div>';
+
+  // Act
+  const transformedTemplate = templateTransformer.transform(template);
+
+  // Assert
+  expect(transformedTemplate).toBe(expectedTemplate);
+});
+
+it('should replace the event parameter', () => {
+  // Arrange
+  const template = '<div onclick="{{ foo(event) }}" onmouseover="{{ eventProcess(event) }}" onmouseout="{{ console.log(\'event\'), eventProcess() }}" onblur="{{ logEvent() }}" onfocus="{{ eventStart(); foo(event); bar(event); eventDone(); event; }}"></div>';
+  const expectedTemplate = '<div data-component-root @click="foo($event)" @mouseover="eventProcess($event)" @mouseout="console.log(\'event\'), eventProcess()" @blur="logEvent()" @focus="eventStart(); foo($event); bar($event); eventDone(); $event;"></div>';
+
+  // Act
+  const transformedTemplate = templateTransformer.transform(template);
+
+  // Assert
+  expect(transformedTemplate).toBe(expectedTemplate);
+});
+
+it('should replace attributes with a greater than expression', () => {
+  // Arrange
+  const template = '<div><my-comp data-foo="{{ 1 > 0 }}" data-bar="{{ 2 }}"></my-comp></div>';
+  const expectedTemplate = '<div data-component-root><my-comp v-bind:data-foo="1 > 0" v-bind:data-bar="2"></my-comp></div>';
 
   // Act
   const transformedTemplate = templateTransformer.transform(template);
