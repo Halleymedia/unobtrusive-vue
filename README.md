@@ -168,8 +168,33 @@ set params (value) {
 
 Only one `data-with-is-*` attribute can be used at this time. Wrap all parameters in a single object, in case you need to pass more than one.
 
+## Handling events
+Custom component setters/attributes starting with `on` are meant to be events. In the component:
+```
+/**
+ * @param {function|undefined} callback
+ */
+set onselect (callback) {
+  // save callback to a private field so you can invoke it later
+}
+```
+While on the view side, you can handle the event like this.
+```
+<my-component onselect="{{ doSomething(args) }}" />
+```
+The `args` identifier contains a reference to the arguments array provided by the caller. Or, if you just need the first of those arguments you could do:
+```
+<my-component onselect="{{ doSomething(value) }}" />
+```
+The `value` identifier references the first of those arguments, if present, otherwise it's `undefined`.
+
+If, instead, you're subscribing an event of a HTML element, then you can use the `event` identifier which is a reference to Vue's `$event` object.
+```
+<button type="button" onclick="{{ doSomething(event) }}">Do something</button>
+```
+
 ## Template transformations
-The moustached syntax is converted to Vue.js conventions. Template transformation is done with by the `@component` decorator at runtime but it's preferred to do it beforehand, at compile time. Here's an example on how to do it with webpack using the `html-loader` and its `preprocessor` option (see [./sample/webpack.config.babel.js](sample/webpack.config.babel.js)).
+The moustached syntax is converted to Vue.js conventions. Template transformation is done with by the `@component` decorator at runtime but, since it might be slow with lots of components, it's preferred to do it beforehand, at compile time. Here's an example on how to do it with webpack using the `html-loader` and its `preprocessor` option (see [./sample/webpack.config.babel.js](sample/webpack.config.babel.js)).
 
 ```js
 import { templateTransformer } from '@halleymedia/unobtrusive-vue'
@@ -208,25 +233,22 @@ You **should**:
 
  * Use ES6 class `properties` for two-way data binding and `getters` for one-way data binding since properties are publicly writable, while getters are not;
 
- * Transform templates at build-time using webpack or gulp. If you don't, then it will be done at runtime and that will break compatibility with IE11 since it's using some regexp functionality which is missing from IE11;
+ * Use lowercase for custom component events e.g. use `onclick` and not `on-click` or `onClick`.
 
- * Use lowercase for custom component events. E.g. use `onclick` and not `on-click`.
-
- * NOT use the `class` attribute with moustached syntax because it would compromise readability. Instead, keep things simple: use individual `data-*` attributes named as you like e.g.
+ * **NOT** use the `class` attribute with moustached syntax because it would compromise readability. Instead, keep things simple: use individual `data-*` attributes named as you like e.g.
    ```
-   <my-component data-hidden="{{isHidden}}">Thing</my-component>
+   <my-component data-is-hidden="{{ isHidden }}">Thing</my-component>
    ```
  
    Then, add this selector to your (S)CSS file:
    ```
    div[data-hidden] { display: none }
    ```
-
-   There's [no performance penalty](https://gomakethings.com/how-performant-are-data-attributes-as-selectors/) in using `data-*` attributes as selectors so there's really no need to use CSS classes;
+   There's [no performance penalty](https://gomakethings.com/how-performant-are-data-attributes-as-selectors/) in using `data-*` attributes as selectors so there's really no need to use dynamic CSS classes;
 
    As expected, `data-*` attributes are removed when you bind them to a boolean `false` value.
 
- * NOT use `render-if` on a component root element because, if you do, you won't get a proper `HTMLElement` as an argument to the `init` function. Vue.js replaces it with a comment when an element is not to be rendered.
+ * **NOT use** `render-if` on a component root element because, if you do, you won't get a proper `HTMLElement` as an argument to the `init` function. Vue.js replaces it with a comment when an element is not to be rendered.
 
 **Notes**
 
@@ -260,6 +282,9 @@ This project follow the JavaScript Semi Standard Style. Click the banner to lear
 
 
 ## Changelog
+
+### v.1.6.2
+ - The `event` identifier is now available in all event handlers. Custom components also get the `args` and `value` identifiers which are reference to - respectively - all arguments and the first argument (if any).
 
 ### v1.6.1
  - Added hooks `onAppCreating`, `onComponentCreating` and `onComponentUpdated`. Sample updated with Hot Module Replacement with Webpack.

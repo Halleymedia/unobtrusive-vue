@@ -256,8 +256,8 @@ it('should replace the event parameter', () => {
 
 it('should replace attributes with a greater than expression', () => {
   // Arrange
-  const template = '<div><my-comp data-foo="{{ 1 > 0 }}" data-bar="{{ 2 }}"></my-comp></div>';
-  const expectedTemplate = '<div data-component-root><my-comp v-bind:data-foo="1 > 0" v-bind:data-bar="2"></my-comp></div>';
+  const template = '<div><my-comp data-fizz=">" data-foo="{{ 1 > 0 }}" data-bar="{{ 2 > 0 && 3 > 0 }}"></my-comp></div>';
+  const expectedTemplate = '<div data-component-root><my-comp data-fizz="&gt;" v-bind:data-foo="1 &gt; 0" v-bind:data-bar="2 &gt; 0 && 3 &gt; 0"></my-comp></div>';
 
   // Act
   const transformedTemplate = templateTransformer.transform(template);

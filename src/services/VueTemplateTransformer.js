@@ -8,9 +8,11 @@ const customElementLookBehind = `(?<=[<]${tagName}(?:-${tagName})+\\s(?:[^>]+?\\
 const moustacheCapture = '\\s*{{\\s*(.*?)\\s*}}\\s*';
 const optionalMoustacheCapture = '(?:{{)?\\s*(.*?)\\s*(?:}})?';
 const propPrefix = 'vue';
+const greaterThanMoustaches = { regexp: '(?<={{[^}]*?)>', flags: 'g', replacement: '&gt;' };
+const greaterThanQuotes = { regexp: '(?<=="[^"]*?)>', flags: 'g', replacement: '&gt;' };
 const componentName = { regexp: '(<[a-z-]+)(\\sdata-component-root)?(\\s|>)', flags: '', replacement: '$1 data-component-root$3' };
 const componentSelfClose = { regexp: '[<]([a-z]+(?:-[a-z]+)+)\\s([^>]*)/>', flags, replacement: '<$1 $2></$1>' };
-const eventObjectReplacement = { regexp: `(?<=[<]${extendedTagName}\\s(?:[^>]+?)?on${attributeName}="\\s*{{.*?[(\\s])event(?=[);+.-\\s"}])`, flags: 'g', replacement: '$event' };
+const eventObject = { regexp: `(?<=[<]${extendedTagName}\\s(?:[^>]+?)?on${attributeName}="\\s*{{.*?[(\\s])event(?=[);+.-\\s"}])`, flags: 'g', replacement: '$event' };
 const renderIf = { regexp: `${spaceLookBehind}render-if="${moustacheCapture}"`, flags, replacement: 'v-if="$1"' };
 const renderFor = { regexp: `${spaceLookBehind}render-for="${moustacheCapture}"`, flags, replacement: 'v-for="($item, $index) in $1" :key="$item.id"' };
 const dataIs = { regexp: `${spaceLookBehind}data-with-is-(.*?)="${moustacheCapture}"`, flags, replacement: `v-bind="{${propPrefix}$1:$2}"` };
@@ -23,7 +25,7 @@ const customAttributesEventExpressions = { regexp: `${customElementLookBehind}(?
 const customAttributesExpressions = { regexp: `${customElementLookBehind}(?!v-on|data-on)(${attributeName})="${moustacheCapture}"`, flags, replacement: `v-bind:${propPrefix}$1="$2"` };
 const customAttributesLiterals = { regexp: `${customElementLookBehind}(?!v-|data-)(${attributeName})="${optionalMoustacheCapture}"`, flags, replacement: `${propPrefix}$1="$2"` };
 
-const expressions = [componentName, componentSelfClose, eventObjectReplacement, renderIf, renderFor, dataIs, inputValue, onSubmit, eventHandlers, builtinAttributes, componentDataAttributesExpressions, customAttributesEventExpressions, customAttributesExpressions, customAttributesLiterals];
+const expressions = [greaterThanMoustaches, greaterThanQuotes, componentName, componentSelfClose, eventObject, renderIf, renderFor, dataIs, inputValue, onSubmit, eventHandlers, builtinAttributes, componentDataAttributesExpressions, customAttributesEventExpressions, customAttributesExpressions, customAttributesLiterals];
 
 export default class VueTemplateTransformer {
   /**

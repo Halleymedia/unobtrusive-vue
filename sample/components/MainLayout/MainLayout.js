@@ -18,30 +18,16 @@ class MainLayout {
     console.log('MainLayout has been rendered on element', element);
   }
 
-  /**
-   * @param {Event} event
-   */
-  move (event) {
-    console.log(event);
-  }
-
-  /**
-   *
-   * @param {Event} event
-   */
-  clicca (event) {
-    console.log('0cl', event);
-  }
-
   dispose () {
     console.log('MainLayout has been disposed');
   }
 
   /**
+   * @param {Array<any>} args
    * @param {number} value
    */
-  logUpdate (value) {
-    console.log('Value updated', value);
+  logUpdate (args, value) {
+    console.log('Value updated', value, args);
   }
 
   /**
