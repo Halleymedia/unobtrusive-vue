@@ -283,6 +283,9 @@ This project follow the JavaScript Semi Standard Style. Click the banner to lear
 
 ## Changelog
 
+### v1.6.4
+ - Fix: property setters are now invoked on `beforeMount`, i.e. before component rendering takes place.
+
 ### v1.6.3
  - Fixed a bug which would prevent component constructor parameters to be passed to hot-reloaded instances.
 

@@ -31,6 +31,22 @@ export default class VueComponentAdapter {
     Object.defineProperty(this, 'computed', { configurable: false, enumerable: true, get: this.getComputed, set: () => {} });
     Object.defineProperty(this, 'template', { configurable: false, enumerable: true, get: this.getTemplate, set: this.setTemplate });
     Object.defineProperty(this, 'watch', { configurable: false, enumerable: true, get: this.getWatch, set: () => {} });
+    Object.defineProperty(this, 'beforeMount', {
+      configurable: false,
+      enumerable: true,
+      value: function () {
+        /**
+         * @type {any}
+         */
+        const vueComponent = this;
+        const componentInstance = vueComponent.$data;
+        props.forEach(/** @param {string} prop */ prop => {
+          if (prop in this.$vnode.componentOptions.propsData) {
+            componentInstance[prop.substr(VueTemplateTransformer.propPrefix.length)] = parseValue(vueComponent[prop]);
+          }
+        });
+      }
+    });
     Object.defineProperty(this, 'mounted', {
       configurable: false,
       enumerable: true,
@@ -41,11 +57,6 @@ export default class VueComponentAdapter {
         const vueComponent = this;
         const componentInstance = vueComponent.$data;
         const containerElement = vueComponent.$el;
-        props.forEach(/** @param {string} prop */ prop => {
-          if (prop in this.$vnode.componentOptions.propsData) {
-            componentInstance[prop.substr(VueTemplateTransformer.propPrefix.length)] = parseValue(vueComponent[prop]);
-          }
-        });
         /**
          * @type {any}
          */
