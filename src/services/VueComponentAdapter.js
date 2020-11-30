@@ -150,7 +150,12 @@ export default class VueComponentAdapter {
           const activationObject = /** @type {any} */ (('$data' in this) ? this.$data : this);
           VueComponentUpdater.getValue(activationObject);
           // @ts-ignore
-          return descriptor.get.call(activationObject);
+          let value = descriptor.get.call(activationObject);
+          if (typeof value === 'object' && !value.__ob__) {
+            // @ts-ignore
+            value = Vue.observable(value);
+          }
+          return value;
         } : undefined;
       });
     if (this.#onComponentCreating && typeof this.#onComponentCreating === 'function') {
