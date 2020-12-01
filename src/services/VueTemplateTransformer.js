@@ -53,6 +53,17 @@ export default class VueTemplateTransformer {
   static get propPrefix () {
     return propPrefix;
   }
+
+  /**
+   * @param {string} transformedPropertyName
+   * @returns {string}
+   */
+  static getOriginalPropertyName (transformedPropertyName) {
+    if (!transformedPropertyName) {
+      return transformedPropertyName;
+    }
+    return transformedPropertyName.substr(VueTemplateTransformer.propPrefix.length);
+  }
 }
 
 /**

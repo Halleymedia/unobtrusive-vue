@@ -42,7 +42,7 @@ export default class VueComponentAdapter {
         const componentInstance = vueComponent.$data;
         props.forEach(/** @param {string} prop */ prop => {
           if (prop in this.$vnode.componentOptions.propsData) {
-            componentInstance[prop.substr(VueTemplateTransformer.propPrefix.length)] = parseValue(vueComponent[prop]);
+            componentInstance[VueTemplateTransformer.getOriginalPropertyName(prop)] = parseValue(vueComponent[prop]);
           }
         });
       }
@@ -170,7 +170,26 @@ export default class VueComponentAdapter {
      */
     const watch = {};
     const parseValue = this.#parseValue;
+
+    const proto = this.#componentDescriptor.componentConstructor.prototype;
+
     this.getProps().forEach(prop => {
+      // Rewrite setters
+      const originalPropertyName = VueTemplateTransformer.getOriginalPropertyName(prop);
+      const descriptor = Object.getOwnPropertyDescriptor(proto, originalPropertyName);
+      if (!descriptor) {
+        return;
+      }
+      const originalSetter = descriptor.set;
+      if (!originalSetter) {
+        return;
+      }
+      descriptor.set = function (value) {
+        originalSetter.call(this, value);
+        VueComponentUpdater.update(this);
+      };
+      Object.defineProperty(proto, originalPropertyName, descriptor);
+
       /**
        * @param {any} value
        * @param {any} previousValue
@@ -188,8 +207,9 @@ export default class VueComponentAdapter {
          */
         const componentInstance = vueComponent.$data;
         const parsedValue = parseValue(value);
-        componentInstance[prop.substr(VueTemplateTransformer.propPrefix.length)] = parsedValue;
-        VueComponentUpdater.update(componentInstance);
+        componentInstance[VueTemplateTransformer.getOriginalPropertyName(prop)] = parsedValue;
+        // No longer needed since setters have been rewritten to update the component
+        // VueComponentUpdater.update(componentInstance);
       };
     });
     return watch;
