@@ -24,6 +24,7 @@ const componentDataAttributesExpressions = { regexp: `${customElementLookBehind}
 const customAttributesEventExpressions = { regexp: `${customElementLookBehind}(?!v-|data-)on(${attributeName})="${moustacheCapture}"`, flags, replacement: `v-bind:${propPrefix}on$1="function(){var args=arguments;var value=args.length?args[0]:undefined;$2 }.bind(this)"` };
 const customAttributesExpressions = { regexp: `${customElementLookBehind}(?!v-on|data-on)(${attributeName})="${moustacheCapture}"`, flags, replacement: `v-bind:${propPrefix}$1="$2"` };
 const customAttributesLiterals = { regexp: `${customElementLookBehind}(?!v-|data-)(${attributeName})="${optionalMoustacheCapture}"`, flags, replacement: `${propPrefix}$1="$2"` };
+const spaceRemoval = { regexp: '(?:(>)\\s+|\\s+(<))', flags, replacement: '$1$2' };
 
 const expressions = [greaterThanMoustaches, greaterThanQuotes, componentName, componentSelfClose, eventObject, renderIf, renderFor, dataIs, inputValue, onSubmit, eventHandlers, builtinAttributes, componentDataAttributesExpressions, customAttributesEventExpressions, customAttributesExpressions, customAttributesLiterals];
 
@@ -31,13 +32,18 @@ export default class VueTemplateTransformer {
   /**
    *
    * @param {string} template
+   * @param {{preserveWhitespace: boolean}|undefined} [options]
    * @returns {string}
    */
-  static transform (template) {
+  static transform (template, options) {
     if (!shouldReplace(template)) {
       return template;
     }
-    expressions.forEach(expression => { template = template.replace(new RegExp(expression.regexp, expression.flags), expression.replacement); });
+    var currentExpressions = expressions.slice(0);
+    if (options && options.preserveWhitespace === false) {
+      currentExpressions.push(spaceRemoval);
+    }
+    currentExpressions.forEach(expression => { template = template.replace(new RegExp(expression.regexp, expression.flags), expression.replacement); });
     return template;
   }
 

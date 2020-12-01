@@ -211,7 +211,7 @@ module: {
         minimize: {
           removeAttributeQuotes: false
         },
-        preprocessor: (content) => templateTransformer.transform(content)
+        preprocessor: (content) => templateTransformer.transform(content, { preserveWhitespace: false })
       }
     }
   ]
@@ -282,6 +282,9 @@ This project follow the JavaScript Semi Standard Style. Click the banner to lear
 
 
 ## Changelog
+
+### v1.6.5
+ - Add a `preverseWhiteSpace: bool` option to the template transformer.
 
 ### v1.6.5
  - Fix: complex objects returned by getters are now Vue observables.

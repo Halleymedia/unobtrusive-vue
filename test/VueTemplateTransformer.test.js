@@ -265,3 +265,39 @@ it('should replace attributes with a greater than expression', () => {
   // Assert
   expect(transformedTemplate).toBe(expectedTemplate);
 });
+
+it('should remove spaces between tags when provided the preserveWhitespace: false option', () => {
+  // Arrange
+  const template = '<div class="foo" data-value="bar baz">\n  <p id="foo-bar" render-if="{{ 5 > 2 }}" title="Some short title">hey \n how so</p>   \n    </div>';
+  const expectedTemplate = '<div data-component-root class="foo" data-value="bar baz"><p id="foo-bar" v-if="5 &gt; 2" title="Some short title">hey \n how so</p></div>';
+
+  // Act
+  const transformedTemplate = templateTransformer.transform(template, { preserveWhitespace: false });
+
+  // Assert
+  expect(transformedTemplate).toBe(expectedTemplate);
+});
+
+it('should preserve spaces between tags when missing a preserveWhitespace: false option', () => {
+  // Arrange
+  const template = '<div class="foo" data-value="bar baz">\n  <p id="foo-bar" render-if="{{ 5 > 2 }}" title="Some short title">hey \n how so</p>   \n    </div>';
+  const expectedTemplate = '<div data-component-root class="foo" data-value="bar baz">\n  <p id="foo-bar" v-if="5 &gt; 2" title="Some short title">hey \n how so</p>   \n    </div>';
+
+  // Act
+  const transformedTemplate = templateTransformer.transform(template);
+
+  // Assert
+  expect(transformedTemplate).toBe(expectedTemplate);
+});
+
+it('should preserve spaces between tags when a preserveWhitespace: true option is provided', () => {
+  // Arrange
+  const template = '<div class="foo" data-value="bar baz">\n  <p id="foo-bar" render-if="{{ 5 > 2 }}" title="Some short title">hey \n how so</p>   \n    </div>';
+  const expectedTemplate = '<div data-component-root class="foo" data-value="bar baz">\n  <p id="foo-bar" v-if="5 &gt; 2" title="Some short title">hey \n how so</p>   \n    </div>';
+
+  // Act
+  const transformedTemplate = templateTransformer.transform(template, { preserveWhitespace: true });
+
+  // Assert
+  expect(transformedTemplate).toBe(expectedTemplate);
+});
