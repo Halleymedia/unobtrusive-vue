@@ -64,8 +64,9 @@ export default class VueComponentAdapter {
         if ('init' in componentPrototype) {
           // Let it finish its rendering cycle
           setTimeout(() => {
-            componentPrototype.init.call(componentInstance, containerElement);
+            const result = componentPrototype.init.call(componentInstance, containerElement);
             VueComponentUpdater.update(componentInstance);
+            VueComponentUpdater.updateOnCompleteIfNeeded(componentInstance, result);
           }, 0);
         } else {
           VueComponentUpdater.update(componentInstance);
@@ -123,9 +124,7 @@ export default class VueComponentAdapter {
         proto[method] = function () {
           const result = oldMethod.apply(this, arguments);
           VueComponentUpdater.update(this);
-          if (result && ('finally' in result) && (typeof result.finally === 'function')) {
-            result.finally(() => { VueComponentUpdater.update(this); });
-          }
+          VueComponentUpdater.updateOnCompleteIfNeeded(this, result);
           return result;
         };
         methods[method] = function () {

@@ -15,6 +15,16 @@ export default class VueComponentUpdater {
 
   /**
    * @param {any} component
+   * @param {any} result
+   */
+  static updateOnCompleteIfNeeded (component, result) {
+    if (result && (typeof result.finally === 'function')) {
+      result.finally(() => { VueComponentUpdater.update(component); });
+    }
+  }
+
+  /**
+   * @param {any} component
    * @returns {any}
    */
   static getValue (component) {

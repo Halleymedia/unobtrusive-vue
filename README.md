@@ -283,7 +283,11 @@ This project follow the JavaScript Semi Standard Style. Click the banner to lear
 
 ## Changelog
 
-### v1.6.5
+### v1.7.0
+ - The `init` method can be `async`: the UI will also be automatically updated when the operation completes;
+ - Fix: setters now trigger a UI update even when you set a value yourself.
+
+### v1.6.6
  - Add a `preverseWhiteSpace: bool` option to the template transformer.
 
 ### v1.6.5
