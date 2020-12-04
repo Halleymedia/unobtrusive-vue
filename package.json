@@ -1,7 +1,7 @@
 {
   "name": "@halleymedia/unobtrusive-vue",
   "description": "A thin abstraction layer over the Vue.js renderer for unobtrusive use",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "license": "MIT",
   "private": false,
   "author": {

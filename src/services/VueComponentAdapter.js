@@ -251,7 +251,7 @@ export default class VueComponentAdapter {
    * @returns {any}
    */
   #parseValue = (value) => {
-    if (value == null) {
+    if (value == null || value === '') {
       return value;
     }
     if (typeof value === 'object') {
@@ -269,9 +269,12 @@ export default class VueComponentAdapter {
     } else if (value.toLowerCase() === 'false') {
       return false;
     }
-    const numericValue = parseFloat(value);
-    if (!isNaN(numericValue)) {
-      return numericValue;
+
+    if (/^-?\d*\.?\d*$/.test(value)) {
+      const numericValue = parseFloat(value);
+      if (!isNaN(numericValue)) {
+        return numericValue;
+      }
     }
 
     return value;
