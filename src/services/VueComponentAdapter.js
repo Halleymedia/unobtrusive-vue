@@ -150,7 +150,7 @@ export default class VueComponentAdapter {
           VueComponentUpdater.getValue(activationObject);
           // @ts-ignore
           let value = descriptor.get.call(activationObject);
-          if (typeof value === 'object' && !value.__ob__) {
+          if (value != null && typeof value === 'object' && !value.__ob__) {
             // @ts-ignore
             value = Vue.observable(value);
           }

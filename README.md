@@ -283,6 +283,9 @@ This project follow the JavaScript Semi Standard Style. Click the banner to lear
 
 ## Changelog
 
+### v1.7.2
+ - Fix error: do not attempt to make null values observable.
+
 ### v1.7.1
  - Fix: accidental conversion to number when passing a guid or other non-numeric string via custom components attribute.
 
