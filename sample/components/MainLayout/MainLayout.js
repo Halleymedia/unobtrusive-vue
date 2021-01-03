@@ -2,6 +2,20 @@ import './MainLayout.scss';
 import { component } from '@halleymedia/unobtrusive-vue';
 import template from './MainLayout.html';
 
+class ComplexObject {
+  #a = 1;
+  get a () {
+    return this.#a;
+  }
+
+  set a (value) {
+    this.#a = value;
+  }
+
+  b = { c: 2 };
+  d = [{ e: 1 }];
+}
+
 @component('main-layout', template)
 class MainLayout {
   /**
@@ -16,6 +30,13 @@ class MainLayout {
    */
   init (element) {
     console.log('MainLayout has been rendered on element', element);
+    setInterval(this.#update.bind(this), 1000);
+  }
+
+  #update = () => {
+    this.complex.el.b.c++;
+    this.complex.el.a++;
+    this.complex.el.d[0].e++;
   }
 
   dispose () {
@@ -29,6 +50,8 @@ class MainLayout {
   logUpdate (args, value) {
     console.log('Value updated', value, args);
   }
+
+  complex = { el: new ComplexObject() };
 
   /**
    * @type {number}

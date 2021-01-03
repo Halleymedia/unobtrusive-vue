@@ -141,6 +141,7 @@ export default class VueComponentAdapter {
      */
     const computed = {};
     const proto = this.#componentDescriptor.componentConstructor.prototype;
+    const copyPrototypePropertiesToInstance = this.#copyPrototypePropertiesToInstance;
     this.#componentDescriptor.computed
       .forEach(method => {
         const descriptor = Object.getOwnPropertyDescriptor(proto, method);
@@ -150,9 +151,12 @@ export default class VueComponentAdapter {
           VueComponentUpdater.getValue(activationObject);
           // @ts-ignore
           let value = descriptor.get.call(activationObject);
-          if (value != null && typeof value === 'object' && !value.__ob__) {
-            // @ts-ignore
-            value = Vue.observable(value);
+          if (value != null && typeof value === 'object') {
+            copyPrototypePropertiesToInstance(value);
+            if (!value.__ob__) {
+              // @ts-ignore
+              value = Vue.observable(value);
+            }
           }
           return value;
         } : undefined;
@@ -227,8 +231,10 @@ export default class VueComponentAdapter {
 
   getData () {
     const ConstructorFunction = this.#componentDescriptor.componentConstructor;
+    const recursePrototypePropertiesToInstance = this.#recursePrototypePropertiesToInstance;
     return () => {
       const instance = new ConstructorFunction(this.#componentDescriptor.params);
+      recursePrototypePropertiesToInstance(instance);
       VueComponentUpdater.init(instance);
       return instance;
     };
@@ -255,6 +261,7 @@ export default class VueComponentAdapter {
       return value;
     }
     if (typeof value === 'object') {
+      this.#copyPrototypePropertiesToInstance(value);
       if (!value.__ob__) {
         // @ts-ignore
         value = Vue.observable(value);
@@ -279,6 +286,86 @@ export default class VueComponentAdapter {
 
     return value;
   }
+
+  /**
+   * @param {object} obj
+   */
+  #recursePrototypePropertiesToInstance = (obj) => {
+    const protoProperties = Object.getOwnPropertyDescriptors(Object.getPrototypeOf(obj));
+    const instanceProperties = Object.getOwnPropertyDescriptors(obj);
+    const allProperties = Object.assign({}, protoProperties, instanceProperties);
+    for (const propertyName in allProperties) {
+      if (propertyName.substr(0, 2) === '__' || propertyName === 'constructor') {
+        continue;
+      }
+      const property = allProperties[propertyName];
+      if (!('value' in property) && !('get' in property)) {
+        continue;
+      }
+      // @ts-ignore
+      this.#copyPrototypePropertiesToInstance(obj[propertyName]);
+    }
+  };
+
+  /**
+   * @param {object} obj
+   */
+  #copyPrototypePropertiesToInstance = (obj) => {
+    // TODO: Unit test this
+    if (obj == null || typeof obj !== 'object') {
+      return;
+    }
+
+    const proto = Object.getPrototypeOf(obj);
+    if (proto.constructor === Date) {
+      return;
+    }
+
+    if (Array.isArray(obj)) {
+      for (let i = 0; i < obj.length; i++) {
+        this.#copyPrototypePropertiesToInstance(obj[i]);
+      }
+      return;
+    }
+
+    if ('__uvpr__' in obj) {
+      return;
+    }
+
+    if (proto.constructor !== Object) {
+      const descriptors = Object.getOwnPropertyDescriptors(proto);
+      for (const propertyName in descriptors) {
+        if (propertyName === 'constructor' || Object.getOwnPropertyDescriptor(obj, propertyName)) {
+          continue;
+        }
+
+        const descriptor = descriptors[propertyName];
+        if (!descriptor || !descriptor.get) {
+          continue;
+        }
+        console.log('ESAMINO', obj, propertyName, '__ob__' in obj);
+        // @ts-ignore
+        const configuration = { enumerable: true, configurable: true, get: function () { return descriptor.get.call(obj); } };
+        if (descriptor.set) {
+        // @ts-ignore
+          configuration.set = function (value) {
+          // @ts-ignore
+            descriptor.set.call(obj, value);
+          };
+        }
+        console.log('Adding', propertyName, obj);
+        Object.defineProperty(obj, propertyName, configuration);
+        // @ts-ignore
+        Vue.observable(obj);
+      }
+    }
+
+    Object.defineProperty(obj, '__uvpr__', { enumerable: false, configurable: false, value: null });
+    for (const propertyName in obj) {
+      // @ts-ignore
+      this.#copyPrototypePropertiesToInstance(obj[propertyName]);
+    }
+  };
 
   /**
    * @param {function} h
