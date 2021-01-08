@@ -38,7 +38,7 @@ export default class UnobtrusiveVueApp {
    * Installs Vue on the container element
    * @param {HTMLElement} el
    * @param {any|undefined} [componentParams]
-   * @param {{ isDev: boolean, onAppCreating: function|undefined, onComponentUpdated: function|undefined, onComponentCreating: function|undefined, errHandler: function|undefined }|undefined} [options]
+   * @param {{ isDev: boolean, onAppCreating: function|undefined, onComponentUpdated: function|undefined, onComponentCreating: function|undefined, errorHandler: function|undefined, warnHandler: function|undefined }|undefined} [options]
    */
   constructor (el, componentParams, options) {
     this.#vue = Vue;
