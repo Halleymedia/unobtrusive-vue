@@ -101,7 +101,7 @@ it('should transform template event handlers on builtin elements by wrapping the
 it('should transform template onsubmit to be prevented on builtin elements', () => {
   // Arrange
   const template = '<form onsubmit="{{fizz()}}"><custom-comp onsubmit="{{wha()}}"></custom-comp></form>';
-  const expectedTemplate = '<form data-component-root @submit.prevent="fizz()"><custom-comp v-bind:vueonsubmit="function(){var args=arguments;var value=args.length?args[0]:undefined;wha() }.bind(this)"></custom-comp></form>';
+  const expectedTemplate = '<form data-component-root @submit.stop.prevent="fizz()"><custom-comp v-bind:vueonsubmit="function(){var args=arguments;var value=args.length?args[0]:undefined;wha() }.bind(this)"></custom-comp></form>';
 
   // Act
   const transformedTemplate = templateTransformer.transform(template);
