@@ -283,6 +283,9 @@ This project follow the JavaScript Semi Standard Style. Click the banner to lear
 
 ## Changelog
 
+### v1.7.3
+ - Form submit events are also stopped and not just prevented.
+
 ### v1.7.2
  - Fix error: do not attempt to make null values observable.
 

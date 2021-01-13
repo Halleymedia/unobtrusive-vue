@@ -17,7 +17,7 @@ const renderIf = { regexp: `${spaceLookBehind}render-if="${moustacheCapture}"`, 
 const renderFor = { regexp: `${spaceLookBehind}render-for="${moustacheCapture}"`, flags, replacement: 'v-for="($item, $index) in $1" :key="$item.id"' };
 const dataIs = { regexp: `${spaceLookBehind}data-with-is-(.*?)="${moustacheCapture}"`, flags, replacement: `v-bind="{${propPrefix}$1:$2}"` };
 const inputValue = { regexp: `${builtinElementLookBehind}(?:value|checked)="${moustacheCapture}"`, flags, replacement: 'v-model="$1"' };
-const onSubmit = { regexp: `${builtinElementLookBehind}onsubmit="${moustacheCapture}"`, flags, replacement: '@submit.prevent="$1"' };
+const onSubmit = { regexp: `${builtinElementLookBehind}onsubmit="${moustacheCapture}"`, flags, replacement: '@submit.stop.prevent="$1"' };
 const eventHandlers = { regexp: `${builtinElementLookBehind}on(${attributeName})="${moustacheCapture}"`, flags, replacement: '@$1="$2"' };
 const builtinAttributes = { regexp: `${builtinElementLookBehind}(${attributeName})="${moustacheCapture}"`, flags, replacement: 'v-bind:$1="$2"' };
 const componentDataAttributesExpressions = { regexp: `${customElementLookBehind}(data-${attributeName})="${moustacheCapture}"`, flags, replacement: 'v-bind:$1="$2"' };
