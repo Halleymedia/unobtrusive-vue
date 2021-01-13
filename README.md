@@ -283,6 +283,8 @@ This project follow the JavaScript Semi Standard Style. Click the banner to lear
 
 ## Changelog
 
+### v1.8.0
+ - Getter properties of an object are now also exposed as instance properties, so that Vue can find and observe them.
 ### v1.7.3
  - Form submit events are also stopped and not just prevented.
 
