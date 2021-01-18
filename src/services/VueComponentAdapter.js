@@ -308,34 +308,34 @@ export default class VueComponentAdapter {
   };
 
   /**
-   * @param {object} obj
+   * @param {object} instance
    */
-  #copyPrototypePropertiesToInstance = (obj) => {
+  #copyPrototypePropertiesToInstance = (instance) => {
     // TODO: Unit test this
-    if (obj == null || typeof obj !== 'object') {
+    if (instance == null || typeof instance !== 'object') {
       return;
     }
 
-    const proto = Object.getPrototypeOf(obj);
+    const proto = Object.getPrototypeOf(instance);
     if (proto.constructor === Date) {
       return;
     }
 
-    if (Array.isArray(obj)) {
-      for (let i = 0; i < obj.length; i++) {
-        this.#copyPrototypePropertiesToInstance(obj[i]);
+    if (Array.isArray(instance)) {
+      for (let i = 0; i < instance.length; i++) {
+        this.#copyPrototypePropertiesToInstance(instance[i]);
       }
       return;
     }
 
-    if ('__uvpr__' in obj) {
+    if ('__uvpr__' in instance) {
       return;
     }
 
     if (proto.constructor !== Object) {
       const descriptors = Object.getOwnPropertyDescriptors(proto);
       for (const propertyName in descriptors) {
-        if (propertyName === 'constructor' || Object.getOwnPropertyDescriptor(obj, propertyName)) {
+        if (propertyName === 'constructor' || Object.getOwnPropertyDescriptor(instance, propertyName)) {
           continue;
         }
 
@@ -345,25 +345,32 @@ export default class VueComponentAdapter {
         }
 
         // @ts-ignore
-        const configuration = { enumerable: true, configurable: true, get: function () { return descriptor.get.call(obj); } };
+        const configuration = {
+          enumerable: true,
+          configurable: true,
+          get: function () {
+            // @ts-ignore
+            return descriptor.get.call(instance);
+          }
+        };
         if (descriptor.set) {
         // @ts-ignore
           configuration.set = function (value) {
           // @ts-ignore
-            descriptor.set.call(obj, value);
+            descriptor.set.call(instance, value);
           };
         }
 
-        Object.defineProperty(obj, propertyName, configuration);
+        Object.defineProperty(instance, propertyName, configuration);
         // @ts-ignore
-        Vue.observable(obj);
+        Vue.observable(instance);
       }
     }
 
-    Object.defineProperty(obj, '__uvpr__', { enumerable: false, configurable: false, value: null });
-    for (const propertyName in obj) {
+    Object.defineProperty(instance, '__uvpr__', { enumerable: false, configurable: false, value: null });
+    for (const propertyName in instance) {
       // @ts-ignore
-      this.#copyPrototypePropertiesToInstance(obj[propertyName]);
+      this.#copyPrototypePropertiesToInstance(instance[propertyName]);
     }
   };
 
