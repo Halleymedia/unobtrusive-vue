@@ -343,7 +343,7 @@ export default class VueComponentAdapter {
         if (!descriptor || !descriptor.get) {
           continue;
         }
-        console.log('ESAMINO', obj, propertyName, '__ob__' in obj);
+
         // @ts-ignore
         const configuration = { enumerable: true, configurable: true, get: function () { return descriptor.get.call(obj); } };
         if (descriptor.set) {
@@ -353,7 +353,7 @@ export default class VueComponentAdapter {
             descriptor.set.call(obj, value);
           };
         }
-        console.log('Adding', propertyName, obj);
+
         Object.defineProperty(obj, propertyName, configuration);
         // @ts-ignore
         Vue.observable(obj);
