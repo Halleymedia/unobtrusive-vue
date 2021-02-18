@@ -86,6 +86,18 @@ it('should transform template attributes', () => {
   expect(transformedTemplate).toBe(expectedTemplate);
 });
 
+it('should tolerate multiple spaces in tag element', () => {
+  // Arrange
+  const template = '<div  title="{{fizz}}"  placeholder="{{buzz}}"><custom-comp  whatever="{{wha}}"  val-1="{{t}}"></custom-comp></div>';
+  const expectedTemplate = '<div data-component-root  v-bind:title="fizz"  v-bind:placeholder="buzz"><custom-comp  v-bind:vuewhatever="wha"  v-bind:vueval-1="t"></custom-comp></div>';
+
+  // Act
+  const transformedTemplate = templateTransformer.transform(template);
+
+  // Assert
+  expect(transformedTemplate).toBe(expectedTemplate);
+});
+
 it('should transform template event handlers on builtin elements by wrapping the original call', () => {
   // Arrange
   const template = '<div onclick="{{fizz()}}" onmouseover="{{buzz()}}"><custom-comp onwhatever="{{wha()}}"></custom-comp></div>';
